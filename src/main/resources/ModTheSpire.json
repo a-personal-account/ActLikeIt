@@ -1,0 +1,11 @@
+{
+  "modid": "actlikeit",
+  "name": "Act like it!",
+  "author_list": ["Razash"],
+  "credits": "",
+  "description": "Rudimentary framework for creating acts.",
+  "version": "0.6",
+  "sts_version": "01-23-2019",
+  "mts_version": "3.8.3",
+  "dependencies": ["basemod"]
+}
