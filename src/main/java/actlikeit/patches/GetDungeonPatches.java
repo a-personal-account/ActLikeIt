@@ -41,6 +41,7 @@ public class GetDungeonPatches {
                     dungeon = cd.fromProgression(p);
                 }catch (Exception ex) {
                     BaseMod.logger.error("Failed to instantiate act " + key);
+                    ex.printStackTrace();
                 }
             }
             return dungeon;
@@ -56,6 +57,7 @@ public class GetDungeonPatches {
                     dungeon = cd.fromSaveFile(p, save);
                 }catch (Exception ex) {
                     BaseMod.logger.error("Failed to instantiate act " + key);
+                    ex.printStackTrace();
                 }
             }
             return dungeon;

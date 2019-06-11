@@ -18,14 +18,7 @@ public class SetAreaNamePatch {
         if (CustomDungeon.dungeons.containsKey(key)) {
             CustomDungeon cd = CustomDungeon.dungeons.get(key);
             __instance.levelName = cd.name;
-
-            String[] tmp = (String[])CustomDungeon.actnumbers.values().toArray();
-            for(int i = 0; i < tmp.length; i++) {
-                if(tmp[i] == key) {
-                    __instance.levelNum = Integer.toString((int)CustomDungeon.actnumbers.keySet().toArray()[i]);
-                    break;
-                }
-            }
+            __instance.levelNum = DungeonTransitionScreen.TEXT[2].replace("1", Integer.toString(AbstractDungeon.actNum + 1));
         }
     }
 

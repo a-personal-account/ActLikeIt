@@ -1,5 +1,6 @@
 package actlikeit.patches;
 
+import actlikeit.dungeons.CustomDungeon;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -18,10 +19,17 @@ import java.util.ArrayList;
         }
 )
 public class PreventConstructorCrashPatch {
-    public static SpireReturn Prefix(AbstractDungeon __instance, String a, String b, AbstractPlayer p, ArrayList c) {
+    public static SpireReturn Prefix(AbstractDungeon __instance, String a, String levelId, AbstractPlayer p, ArrayList c) {
         if(p == null) {
             return SpireReturn.Return(null);
         } else {
+            if(__instance instanceof CustomDungeon) {
+                //Important for monster generation.
+                ((CustomDungeon)__instance).id = CustomDungeon.datasource.id;
+                ((CustomDungeon)__instance).weakpreset = CustomDungeon.datasource.weakpreset;
+                ((CustomDungeon)__instance).strongpreset = CustomDungeon.datasource.strongpreset;
+                ((CustomDungeon)__instance).elitepreset = CustomDungeon.datasource.elitepreset;
+            }
             return SpireReturn.Continue();
         }
     }

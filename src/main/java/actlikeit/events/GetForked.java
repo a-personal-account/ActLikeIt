@@ -22,7 +22,7 @@ public class GetForked extends AbstractImageEvent {
     public GetForked() {
         super(NAME, DESCRIPTIONS[0], BASE_IMG);
         String actName = null;
-        switch(AbstractDungeon.actNum) {
+        switch(AbstractDungeon.actNum + 1) {
             case CustomDungeon.EXORDIUM:
                 actName = Exordium.NAME;
                 break;
@@ -37,8 +37,8 @@ public class GetForked extends AbstractImageEvent {
                 break;
         }
         imageEventText.setDialogOption('[' + actName + ']');
-        if(CustomDungeon.actnumbers.containsKey(AbstractDungeon.actNum)) {
-            for(final String s : CustomDungeon.actnumbers.get(AbstractDungeon.actNum)) {
+        if(CustomDungeon.actnumbers.containsKey(AbstractDungeon.actNum + 1)) {
+            for(final String s : CustomDungeon.actnumbers.get(AbstractDungeon.actNum + 1)) {
                 imageEventText.setDialogOption('[' + CustomDungeon.dungeons.get(s).name + ']');
             }
         }
@@ -49,7 +49,7 @@ public class GetForked extends AbstractImageEvent {
     protected void buttonEffect(int buttonPressed) {
         ArrayList<String> possibilities = new ArrayList<>();
 
-        switch(AbstractDungeon.actNum) {
+        switch(AbstractDungeon.actNum + 1) {
             case CustomDungeon.EXORDIUM:
                 possibilities.add(Exordium.ID);
                 break;
@@ -64,8 +64,10 @@ public class GetForked extends AbstractImageEvent {
                 break;
         }
 
-        for(final String s : CustomDungeon.actnumbers.get(AbstractDungeon.actNum)) {
-            possibilities.add(s);
+        if(CustomDungeon.actnumbers.containsKey(AbstractDungeon.actNum + 1)) {
+            for (final String s : CustomDungeon.actnumbers.get(AbstractDungeon.actNum + 1)) {
+                possibilities.add(s);
+            }
         }
 
         if(buttonPressed == possibilities.size()) {

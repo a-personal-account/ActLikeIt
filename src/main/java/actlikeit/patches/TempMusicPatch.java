@@ -14,26 +14,15 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 @SpirePatch(
         clz = TempMusic.class,
         method = "getSong")
-public class FactoryTempMusic {
+public class TempMusicPatch {
 
     @SpirePostfixPatch
     public static SpireReturn<Music> Prefix(TempMusic __instance, String key) {
-        ActLikeIt.logger.info("Music patch Temp hit");
-        if(CustomDungeon.dungeons.containsKey(AbstractDungeon.actNum) && CustomDungeon.dungeons.containsKey(AbstractDungeon.id)) {
-
+        if(CustomDungeon.tempmusic.containsKey(key)) {
+            ActLikeIt.logger.info("Starting custom music: " + key);
+            return SpireReturn.Return(MainMusic.newMusic(CustomDungeon.tempmusic.get(key)));
         }
-        switch (key) {
-            case "FACTORYELITE": {
-                return SpireReturn.Return(MainMusic.newMusic("superResources/audio/music/factory_elite.ogg"));
-            }
-            case "BOSS_FACTORY": {
-                return SpireReturn.Return(MainMusic.newMusic("superResources/audio/music/boss_factory.ogg"));
-            }
-            default: {
-                return SpireReturn.Continue();
-            }
-        }
-
+        return SpireReturn.Continue();
     }
 
 }

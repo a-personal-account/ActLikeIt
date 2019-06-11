@@ -2,6 +2,7 @@ package actlikeit.patches;
 
 import actlikeit.dungeons.CustomDungeon;
 import actlikeit.events.GetForked;
+import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
@@ -18,7 +19,10 @@ public class GoToNextDungeonPatch {
             locator = Locator.class
     )
     public static SpireReturn<Void> Insert(ProceedButton __instance, AbstractRoom room) {
-        if(CustomDungeon.actnumbers.containsKey(AbstractDungeon.actNum)) {
+        for(final int num : CustomDungeon.actnumbers.keySet()) {
+            BaseMod.logger.error(num);
+        }
+        if(CustomDungeon.actnumbers.containsKey(AbstractDungeon.actNum + 1)) {
             AbstractDungeon.currMapNode.room = new ForkEventRoom(AbstractDungeon.currMapNode.room);
             AbstractDungeon.getCurrRoom().onPlayerEntry();
             AbstractDungeon.rs = AbstractDungeon.RenderScene.EVENT;

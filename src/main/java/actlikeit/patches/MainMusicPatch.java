@@ -1,5 +1,6 @@
 package actlikeit.patches;
 
+import actlikeit.dungeons.CustomDungeon;
 import com.badlogic.gdx.audio.Music;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
@@ -7,21 +8,18 @@ import com.megacrit.cardcrawl.audio.MainMusic;
 import actlikeit.ActLikeIt;
 
 @SpirePatch(clz = MainMusic.class, method = "getSong")
-public class FactoryMainMusic {
+public class MainMusicPatch {
 
     @SpirePostfixPatch
     public static Music Postfix(Music __result, MainMusic __instance, String key) {
-        ActLikeIt.logger.info("Music patch Main hit");
-
-        switch (key) {
-            case "FACTORYMAIN": {
-                return MainMusic.newMusic("superResources/audio/music/factory_main.ogg");
-            }
-            default: {
-                return __result;
+        if(CustomDungeon.dungeons.containsKey(key)) {
+            CustomDungeon cd = CustomDungeon.dungeons.get(key);
+            if(cd.mainmusic != null) {
+                ActLikeIt.logger.info("Starting custom music for act: " + key);
+                return MainMusic.newMusic(cd.mainmusic);
             }
         }
-
+        return __result;
     }
 
 }
