@@ -32,12 +32,18 @@ public abstract class CustomDungeon extends AbstractDungeon {
     public int weakpreset;
     public int strongpreset;
     public int elitepreset;
-    private boolean genericEvents;
-    private AbstractScene savedScene;
-    private Color savedFadeColor;
+    protected boolean genericEvents;
+    protected AbstractScene savedScene;
+    protected Color savedFadeColor;
 
     private String eventImg;
 
+    public CustomDungeon(AbstractScene scene, String NAME, String ID) {
+        this(scene, NAME, ID, "images/ui/event/panel.png", true);
+    }
+    public CustomDungeon(AbstractScene scene, String NAME, String ID, boolean genericEvents) {
+        this(scene, NAME, ID, "images/ui/event/panel.png", genericEvents);
+    }
     public CustomDungeon(AbstractScene scene, String NAME, String ID, String eventImg) {
         this(scene, NAME, ID, eventImg, true);
     }
@@ -225,7 +231,6 @@ public abstract class CustomDungeon extends AbstractDungeon {
         }
         eventBackgroundImg = ImageMaster.loadImage(eventImg);
     }
-
 
 
     public static Map<Integer, ArrayList<String>> actnumbers = new HashMap<>();
