@@ -1,18 +1,11 @@
 package actlikeit.patches;
 
 import actlikeit.dungeons.CustomDungeon;
-import basemod.BaseMod;
-import com.evacipated.cardcrawl.modthespire.lib.*;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.Settings;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.dungeons.TheBeyond;
-import com.megacrit.cardcrawl.rooms.MonsterRoomBoss;
 import com.megacrit.cardcrawl.ui.buttons.ProceedButton;
-import javassist.CtBehavior;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 @SpirePatch(

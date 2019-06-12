@@ -1,11 +1,11 @@
 package actlikeit.patches;
 
+import actlikeit.ActLikeIt;
 import actlikeit.dungeons.CustomDungeon;
 import com.badlogic.gdx.audio.Music;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.audio.MainMusic;
-import actlikeit.ActLikeIt;
 
 @SpirePatch(clz = MainMusic.class, method = "getSong")
 public class MainMusicPatch {
