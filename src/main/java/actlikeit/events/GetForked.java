@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.dungeons.*;
 import com.megacrit.cardcrawl.events.AbstractImageEvent;
 import com.megacrit.cardcrawl.events.GenericEventDialog;
 import com.megacrit.cardcrawl.localization.EventStrings;
+import com.megacrit.cardcrawl.neow.NeowRoom;
 import com.megacrit.cardcrawl.ui.buttons.ProceedButton;
 
 import java.util.ArrayList;
@@ -92,12 +93,20 @@ public class GetForked extends AbstractImageEvent {
         if(AbstractDungeon.actNum + 1 >= CustomDungeon.THEENDING && !afterdoor && buttonPressed == 0) {
             ContinueOntoHeartPatch.heartRoom(new ProceedButton());
         } else {
-            if(afterdoor && buttonPressed > 0) {
+            if(AbstractDungeon.actNum + 1 >= CustomDungeon.THEENDING && afterdoor && buttonPressed > 0) {
                 Settings.hasEmeraldKey = false;
                 Settings.hasSapphireKey = false;
                 Settings.hasRubyKey = false;
             }
-            nextDungeon(possibilities.get(buttonPressed));
+
+            if(possibilities.get(buttonPressed) == Exordium.ID) {
+                AbstractDungeon.actNum++;
+                GenericEventDialog.hide();
+                AbstractDungeon.currMapNode.room = new NeowRoom(false);
+                AbstractDungeon.currMapNode.room.onPlayerEntry();
+            } else {
+                nextDungeon(possibilities.get(buttonPressed));
+            }
         }
     }
 
@@ -105,7 +114,7 @@ public class GetForked extends AbstractImageEvent {
         CardCrawlGame.nextDungeon = dungeonID;
 
         AbstractDungeon.rs = AbstractDungeon.RenderScene.NORMAL;
-        if (AbstractDungeon.currMapNode.room instanceof GoToNextDungeonPatch.ForkEventRoom) {
+        if (AbstractDungeon.currMapNode.room instanceof GoToNextDungeonPatch.ForkEventRoom && ((GoToNextDungeonPatch.ForkEventRoom) AbstractDungeon.currMapNode.room).originalRoom != null) {
             AbstractDungeon.currMapNode.room = ((GoToNextDungeonPatch.ForkEventRoom) AbstractDungeon.currMapNode.room).originalRoom;
         }
         GenericEventDialog.hide();

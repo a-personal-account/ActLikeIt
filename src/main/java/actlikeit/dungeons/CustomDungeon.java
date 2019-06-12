@@ -1,20 +1,18 @@
 package actlikeit.dungeons;
 
 import basemod.BaseMod;
-import basemod.abstracts.CustomPlayer;
 import com.badlogic.gdx.graphics.Color;
-import com.megacrit.cardcrawl.audio.MainMusic;
-import com.megacrit.cardcrawl.audio.TempMusic;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.characters.Ironclad;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.*;
+import com.megacrit.cardcrawl.events.AbstractEvent;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.map.MapRoomNode;
-import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.monsters.MonsterInfo;
+import com.megacrit.cardcrawl.neow.NeowRoom;
 import com.megacrit.cardcrawl.rooms.EmptyRoom;
+import com.megacrit.cardcrawl.rooms.EventRoom;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 import com.megacrit.cardcrawl.scenes.AbstractScene;
 
@@ -36,6 +34,10 @@ public abstract class CustomDungeon extends AbstractDungeon {
     protected AbstractScene savedScene;
     protected Color savedFadeColor;
     public boolean finalAct;
+    private Class<? extends AbstractEvent> onEnter = null;
+    public boolean hasEvent() {
+        return onEnter != null;
+    }
 
     private String eventImg;
 
@@ -75,8 +77,34 @@ public abstract class CustomDungeon extends AbstractDungeon {
 
         setupMisc(cd, AbstractDungeon.actNum);
 
+
         AbstractDungeon.currMapNode = new MapRoomNode(0, -1);
-        AbstractDungeon.currMapNode.room = new EmptyRoom();
+
+        if(cd.onEnter != null || AbstractDungeon.floorNum < 1) {
+            try {
+                if(cd.onEnter == null) {
+                    throw new ArithmeticException();
+                }
+
+                AbstractEvent ae = cd.onEnter.newInstance();
+
+                AbstractDungeon.currMapNode.room = new EventRoom();
+                AbstractDungeon.currMapNode.room.event = ae;
+                AbstractDungeon.overlayMenu.proceedButton.hide();
+                ae.onEnterRoom();
+            } catch(Exception ex) {
+                if(!(ex instanceof ArithmeticException)) {
+                    ex.printStackTrace();
+                }
+                AbstractDungeon.currMapNode.room = new NeowRoom(false);
+            }
+            AbstractDungeon.rs = RenderScene.EVENT;
+            AbstractDungeon.screen = CurrentScreen.NONE;
+            AbstractDungeon.isScreenUp = false;
+            AbstractDungeon.previousScreen = null;
+        } else {
+            AbstractDungeon.currMapNode.room = new EmptyRoom();
+        }
     }
     public CustomDungeon(CustomDungeon cd, AbstractPlayer p, SaveFile saveFile) {
         super(cd.name, p, saveFile);
@@ -96,6 +124,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
         scene = cd.savedScene;
         fadeColor = cd.savedFadeColor;
         this.name = cd.name;
+        AbstractDungeon.eventBackgroundImg = ImageMaster.loadImage(cd.eventImg);
         initializeLevelSpecificChances();
         mapRng = new com.megacrit.cardcrawl.random.Random(Settings.seed + actNum * 100);
         generateMap();
@@ -154,6 +183,9 @@ public abstract class CustomDungeon extends AbstractDungeon {
 
     public void isFinalAct(boolean fin) {
         this.finalAct = fin;
+    }
+    public void onEnterEvent(Class<? extends AbstractEvent> event) {
+        this.onEnter = event;
     }
 
 
