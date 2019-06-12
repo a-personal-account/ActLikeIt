@@ -18,7 +18,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class VictoryOrDeathScreenPatch {
-    //Forget this for now.
+    //Forget this for now. Asked Casey to make it much easier for us to do score stuff, and then this would change massively.
 /*
     @SpirePatch(
             clz = VictoryScreen.class,

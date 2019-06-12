@@ -23,8 +23,8 @@ public class ContinueOntoHeartPatch {
     )
 
     public static void Insert(ProceedButton __instance) {
+        //Mostly copied from the basegame and applied to custom dungeons on or higher than Beyond's level.
         if (AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss) {
-            //Check here for door and stuff?
             if (AbstractDungeon.actNum >= CustomDungeon.THEBEYOND && !(CardCrawlGame.dungeon instanceof TheBeyond)) {
                 if (AbstractDungeon.ascensionLevel >= 20 && AbstractDungeon.bossList.size() == 2) {
                     try {

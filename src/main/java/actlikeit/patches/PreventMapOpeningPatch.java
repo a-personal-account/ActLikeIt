@@ -15,7 +15,8 @@ import javassist.CtBehavior;
         method = "update"
 )
 public class PreventMapOpeningPatch {
-
+    //Upon entering a new act, the map is opened and it scrolls down unless it's precisely the Exordium.
+    //This here prevents that if the custom act has a set starting event, or is act 1.
     @SpireInsertPatch(
             locator = Locator.class
     )

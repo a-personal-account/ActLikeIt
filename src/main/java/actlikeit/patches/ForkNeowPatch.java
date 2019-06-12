@@ -24,7 +24,7 @@ public class ForkNeowPatch {
     @SpireInsertPatch(
             locator = Locator.class
     )
-
+    //Sets a forkevent just before the Neow room is created
     public static SpireReturn<Void> Insert(Exordium __instance, AbstractPlayer p, ArrayList bleh) {
         ArrayList<String> availableActs = new ArrayList<>();
         if(CustomDungeon.actnumbers.containsKey(CustomDungeon.EXORDIUM)) {

@@ -8,7 +8,7 @@ import javassist.CtBehavior;
 
 
 public class InitializeDeckPatches {
-
+    //Loading an act on floornumber 0 has odd behaviour that is corrected with these 2 patches.
     @SpirePatch(
             clz = AbstractPlayer.class,
             method = "initializeStarterDeck"

@@ -14,23 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GetDungeonPatches {
-    // Note: this should at some point be moved to BaseMod
-    public static HashMap<String, AbstractDungeonBuilder> customDungeons = new HashMap<>();
-    public static HashMap<String, String> nextDungeons = new HashMap<>();
-
-    public static void addDungeon(String id, AbstractDungeonBuilder builder) {
-        customDungeons.put(id, builder);
-    }
-
-    public static void addNextDungeon(String fromId, String toId) {
-        nextDungeons.put(fromId, toId);
-    }
-
-    public interface AbstractDungeonBuilder {
-        AbstractDungeon build(AbstractPlayer p, ArrayList<String> theList);
-
-        AbstractDungeon build(AbstractPlayer p, SaveFile save);
-    }
 
     @SpirePatch(clz = CardCrawlGame.class, method = "getDungeon", paramtypez = {String.class, AbstractPlayer.class})
     public static class getDungeonThroughProgression {
@@ -64,6 +47,7 @@ public class GetDungeonPatches {
         }
     }
 
+    /*
     @SpirePatch(clz = TreasureRoomBoss.class, method = "getNextDungeonName", paramtypez = {})
     public static class getNextDungeonName {
         public static SpireReturn<String> Prefix(TreasureRoomBoss self) {
@@ -74,5 +58,5 @@ public class GetDungeonPatches {
                 return SpireReturn.Continue();
             }
         }
-    }
+    }*/
 }

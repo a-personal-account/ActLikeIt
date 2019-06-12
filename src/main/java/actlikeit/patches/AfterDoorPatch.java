@@ -19,6 +19,7 @@ public class AfterDoorPatch {
             locator = Locator.class
     )
 
+    //Set the fork-event if there's options after the door on this level.
     public static SpireReturn<Void> Prefix(DoorUnlockScreen __instance) {
         ArrayList<String> availableActs = new ArrayList<>();
         if(CustomDungeon.actnumbers.containsKey(AbstractDungeon.actNum + 1)) {

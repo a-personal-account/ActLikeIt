@@ -30,6 +30,7 @@ public class GetForked extends AbstractImageEvent {
 
         this.afterdoor = afterdoor;
 
+        //Create a list of all possible acts following the current one.
         String actName = null;
         switch(AbstractDungeon.actNum + 1) {
             case CustomDungeon.EXORDIUM:
@@ -82,8 +83,10 @@ public class GetForked extends AbstractImageEvent {
             }
         }
 
+        //Chose the option "random act plx"
         if(buttonPressed == possibilities.size()) {
             if(AbstractDungeon.actNum + 1 >= CustomDungeon.THEENDING && !afterdoor) {
+                //Approaching the heart is not among the random options.
                 buttonPressed = AbstractDungeon.mapRng.random(possibilities.size() - 2) + 1;
             } else {
                 buttonPressed = AbstractDungeon.mapRng.random(possibilities.size() - 1);
@@ -94,12 +97,14 @@ public class GetForked extends AbstractImageEvent {
             ContinueOntoHeartPatch.heartRoom(new ProceedButton());
         } else {
             if(AbstractDungeon.actNum + 1 >= CustomDungeon.THEENDING && afterdoor && buttonPressed > 0) {
+                //Entering a custom act that required the keys removes the keys from your inventory.
                 Settings.hasEmeraldKey = false;
                 Settings.hasSapphireKey = false;
                 Settings.hasRubyKey = false;
             }
 
             if(possibilities.get(buttonPressed) == Exordium.ID) {
+                //Chosen the Exordium itself means it doesn't need to reload the act.
                 AbstractDungeon.actNum++;
                 GenericEventDialog.hide();
                 AbstractDungeon.currMapNode.room = new NeowRoom(false);
@@ -111,6 +116,7 @@ public class GetForked extends AbstractImageEvent {
     }
 
     public static void nextDungeon(String dungeonID) {
+        //Set the stage for the next act.
         CardCrawlGame.nextDungeon = dungeonID;
 
         AbstractDungeon.rs = AbstractDungeon.RenderScene.NORMAL;

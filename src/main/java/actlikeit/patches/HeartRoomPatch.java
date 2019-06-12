@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class HeartRoomPatch {
 
     public static SpireReturn<Void> Prefix(ProceedButton __instance) {
+        //Just before the heart room, trigger a fork event. If you come here from said fork event, it continues as it normally would.
         if(!(AbstractDungeon.currMapNode.room instanceof GoToNextDungeonPatch.ForkEventRoom)) {
             ArrayList<String> availableActs = new ArrayList<>();
             if (CustomDungeon.actnumbers.containsKey(AbstractDungeon.actNum + 1)) {

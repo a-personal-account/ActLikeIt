@@ -9,7 +9,7 @@ import com.megacrit.cardcrawl.audio.MainMusic;
 
 @SpirePatch(clz = MainMusic.class, method = "getSong")
 public class MainMusicPatch {
-
+    //Load custom music for an act if it exists.
     @SpirePostfixPatch
     public static Music Postfix(Music __result, MainMusic __instance, String key) {
         if(CustomDungeon.dungeons.containsKey(key)) {

@@ -11,6 +11,7 @@ import javassist.CtBehavior;
         method = "setAreaName"
 )
 public class SetAreaNamePatch {
+    //Makes the right text and actnumber display at the start of a new act.
     @SpireInsertPatch(
             locator = Locator.class
     )

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 )
 public class PreventConstructorCrashPatch {
     public static SpireReturn Prefix(AbstractDungeon __instance, String a, String levelId, AbstractPlayer p, ArrayList c) {
+        //The constructor for AbstractDungeon requires an AbstractPlayer to be present or it crashes.
         if(p == null) {
             return SpireReturn.Return(null);
         } else {

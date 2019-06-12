@@ -13,7 +13,7 @@ import com.megacrit.cardcrawl.audio.TempMusic;
         clz = TempMusic.class,
         method = "getSong")
 public class TempMusicPatch {
-
+    //Lets you start custom music from e.g. an elite fight.
     @SpirePostfixPatch
     public static SpireReturn<Music> Prefix(TempMusic __instance, String key) {
         if(CustomDungeon.tempmusic.containsKey(key)) {

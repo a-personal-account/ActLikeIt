@@ -20,9 +20,7 @@ public class GoToNextDungeonPatch {
             locator = Locator.class
     )
     public static SpireReturn<Void> Insert(ProceedButton __instance, AbstractRoom room) {
-        for(final int num : CustomDungeon.actnumbers.keySet()) {
-            BaseMod.logger.error(num);
-        }
+        //Trigger the fork event if there is a custom act available here.
         if(CustomDungeon.actnumbers.containsKey(AbstractDungeon.actNum + 1)) {
             getForked();
 
