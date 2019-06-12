@@ -1,17 +1,20 @@
 package actlikeit.patches;
 
 import actlikeit.dungeons.CustomDungeon;
+import actlikeit.events.GetForked;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.dungeons.TheBeyond;
+import com.megacrit.cardcrawl.dungeons.TheEnding;
 import com.megacrit.cardcrawl.rooms.MonsterRoomBoss;
 import com.megacrit.cardcrawl.ui.buttons.ProceedButton;
 import javassist.CtBehavior;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 @SpirePatch(
         clz = ProceedButton.class,
@@ -24,6 +27,7 @@ public class ContinueOntoHeartPatch {
 
     public static void Insert(ProceedButton __instance) {
         if (AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss) {
+            //Check here for door and stuff?
             if (AbstractDungeon.actNum >= CustomDungeon.THEBEYOND && !(CardCrawlGame.dungeon instanceof TheBeyond)) {
                 if (AbstractDungeon.ascensionLevel >= 20 && AbstractDungeon.bossList.size() == 2) {
                     try {
@@ -34,15 +38,19 @@ public class ContinueOntoHeartPatch {
                         e.printStackTrace();
                     }
                 } else if (!Settings.isEndless) {
-                    try {
-                        Method yuckyPrivateMethod = ProceedButton.class.getDeclaredMethod("goToVictoryRoomOrTheDoor");
-                        yuckyPrivateMethod.setAccessible(true);
-                        yuckyPrivateMethod.invoke(__instance);
-                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
+                    heartRoom(__instance);
                 }
             }
+        }
+    }
+
+    public static void heartRoom(ProceedButton pd) {
+        try {
+            Method yuckyPrivateMethod = ProceedButton.class.getDeclaredMethod("goToVictoryRoomOrTheDoor");
+            yuckyPrivateMethod.setAccessible(true);
+            yuckyPrivateMethod.invoke(pd);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
         }
     }
 

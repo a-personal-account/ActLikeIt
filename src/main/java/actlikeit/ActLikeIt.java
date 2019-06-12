@@ -33,8 +33,9 @@ public class ActLikeIt implements
         BaseMod.subscribe(new ActLikeIt());
     }
 
+    public static String MOD_ID = "actlikeit";
     public static String makeID(String id) {
-        return "ActLikeIt:" + id;
+        return MOD_ID + ":" + id;
     }
 
 
@@ -47,7 +48,7 @@ public class ActLikeIt implements
 
     @Override
     public void receivePostInitialize() {
-        Texture badgeTexture = new Texture("superResources/images/Badge.png");
+        Texture badgeTexture = new Texture(MOD_ID + "/images/Badge.png");
         ModPanel modPanel = new ModPanel();
         BaseMod.registerModBadge(
                 badgeTexture, "Act like it", "Razash",
@@ -58,8 +59,8 @@ public class ActLikeIt implements
     }
 
     private void loadLocStrings(String language) {
-        BaseMod.loadCustomStringsFile(EventStrings.class, "superResources/localization/eng/events.json");
-        BaseMod.loadCustomStringsFile(ScoreBonusStrings.class, "superResources/localization/eng/score_bonuses.json");
+        BaseMod.loadCustomStringsFile(EventStrings.class, MOD_ID + "/localization/eng/events.json");
+        BaseMod.loadCustomStringsFile(ScoreBonusStrings.class, MOD_ID + "/localization/eng/score_bonuses.json");
     }
 
     @Override

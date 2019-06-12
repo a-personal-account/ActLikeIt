@@ -2,12 +2,15 @@ package actlikeit.events;
 
 import actlikeit.ActLikeIt;
 import actlikeit.dungeons.CustomDungeon;
+import actlikeit.patches.ContinueOntoHeartPatch;
 import actlikeit.patches.GoToNextDungeonPatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.*;
 import com.megacrit.cardcrawl.events.AbstractImageEvent;
 import com.megacrit.cardcrawl.events.GenericEventDialog;
 import com.megacrit.cardcrawl.localization.EventStrings;
+import com.megacrit.cardcrawl.ui.buttons.ProceedButton;
 
 import java.util.ArrayList;
 
@@ -17,10 +20,15 @@ public class GetForked extends AbstractImageEvent {
     private static final String NAME = eventStrings.NAME;
     private static final String[] DESCRIPTIONS = eventStrings.DESCRIPTIONS;
     private static final String[] OPTIONS = eventStrings.OPTIONS;
-    private static final String BASE_IMG = "superResources/images/events/ForkInTheRoad.png";
+    private static final String BASE_IMG = ActLikeIt.MOD_ID + "/images/events/ForkInTheRoad.png";
 
-    public GetForked() {
+    private boolean afterdoor;
+
+    public GetForked(boolean afterdoor) {
         super(NAME, DESCRIPTIONS[0], BASE_IMG);
+
+        this.afterdoor = afterdoor;
+
         String actName = null;
         switch(AbstractDungeon.actNum + 1) {
             case CustomDungeon.EXORDIUM:
@@ -32,11 +40,13 @@ public class GetForked extends AbstractImageEvent {
             case CustomDungeon.THEBEYOND:
                 actName = TheBeyond.NAME;
                 break;
-            case CustomDungeon.THEENDING:
-                actName = TheEnding.NAME;
+
+            default:
+                actName = afterdoor ? TheEnding.NAME : OPTIONS[1];
                 break;
         }
         imageEventText.setDialogOption('[' + actName + ']');
+
         if(CustomDungeon.actnumbers.containsKey(AbstractDungeon.actNum + 1)) {
             for(final String s : CustomDungeon.actnumbers.get(AbstractDungeon.actNum + 1)) {
                 imageEventText.setDialogOption('[' + CustomDungeon.dungeons.get(s).name + ']');
@@ -59,7 +69,8 @@ public class GetForked extends AbstractImageEvent {
             case CustomDungeon.THEBEYOND:
                 possibilities.add(TheBeyond.ID);
                 break;
-            case CustomDungeon.THEENDING:
+
+            default:
                 possibilities.add(TheEnding.ID);
                 break;
         }
@@ -71,10 +82,27 @@ public class GetForked extends AbstractImageEvent {
         }
 
         if(buttonPressed == possibilities.size()) {
-            buttonPressed = AbstractDungeon.mapRng.random(possibilities.size() - 1);
+            if(AbstractDungeon.actNum + 1 >= CustomDungeon.THEENDING && !afterdoor) {
+                buttonPressed = AbstractDungeon.mapRng.random(possibilities.size() - 2) + 1;
+            } else {
+                buttonPressed = AbstractDungeon.mapRng.random(possibilities.size() - 1);
+            }
         }
 
-        CardCrawlGame.nextDungeon = possibilities.get(buttonPressed);
+        if(AbstractDungeon.actNum + 1 >= CustomDungeon.THEENDING && !afterdoor && buttonPressed == 0) {
+            ContinueOntoHeartPatch.heartRoom(new ProceedButton());
+        } else {
+            if(afterdoor && buttonPressed > 0) {
+                Settings.hasEmeraldKey = false;
+                Settings.hasSapphireKey = false;
+                Settings.hasRubyKey = false;
+            }
+            nextDungeon(possibilities.get(buttonPressed));
+        }
+    }
+
+    public static void nextDungeon(String dungeonID) {
+        CardCrawlGame.nextDungeon = dungeonID;
 
         AbstractDungeon.rs = AbstractDungeon.RenderScene.NORMAL;
         if (AbstractDungeon.currMapNode.room instanceof GoToNextDungeonPatch.ForkEventRoom) {

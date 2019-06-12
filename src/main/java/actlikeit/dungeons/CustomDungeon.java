@@ -35,6 +35,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
     protected boolean genericEvents;
     protected AbstractScene savedScene;
     protected Color savedFadeColor;
+    public boolean finalAct;
 
     private String eventImg;
 
@@ -58,6 +59,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
         this.eventImg = eventImg;
         this.genericEvents = genericEvents;
         this.savedFadeColor = Color.valueOf("0f220aff");
+        this.finalAct = false;
 
         this.weakpreset = weakpreset;
         this.strongpreset = strongpreset;
@@ -148,6 +150,10 @@ public abstract class CustomDungeon extends AbstractDungeon {
             cardUpgradedChance = 0.5F;
         }
 
+    }
+
+    public void isFinalAct(boolean fin) {
+        this.finalAct = fin;
     }
 
 

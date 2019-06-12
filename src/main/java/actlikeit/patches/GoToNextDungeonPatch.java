@@ -23,18 +23,25 @@ public class GoToNextDungeonPatch {
             BaseMod.logger.error(num);
         }
         if(CustomDungeon.actnumbers.containsKey(AbstractDungeon.actNum + 1)) {
-            AbstractDungeon.currMapNode.room = new ForkEventRoom(AbstractDungeon.currMapNode.room);
-            AbstractDungeon.getCurrRoom().onPlayerEntry();
-            AbstractDungeon.rs = AbstractDungeon.RenderScene.EVENT;
-
-            AbstractDungeon.combatRewardScreen.clear();
-            AbstractDungeon.previousScreen = null;
-            AbstractDungeon.closeCurrentScreen();
+            getForked();
 
             return SpireReturn.Return(null);
         }
 
         return SpireReturn.Continue();
+    }
+
+    public static void getForked() {
+        getForked(false);
+    }
+    public static void getForked(boolean afterdoor) {
+        AbstractDungeon.currMapNode.room = new ForkEventRoom(AbstractDungeon.currMapNode.room, afterdoor);
+        AbstractDungeon.getCurrRoom().onPlayerEntry();
+        AbstractDungeon.rs = AbstractDungeon.RenderScene.EVENT;
+
+        AbstractDungeon.combatRewardScreen.clear();
+        AbstractDungeon.previousScreen = null;
+        AbstractDungeon.closeCurrentScreen();
     }
 
     private static class Locator extends SpireInsertLocator {
@@ -47,15 +54,17 @@ public class GoToNextDungeonPatch {
 
     public static class ForkEventRoom extends EventRoom {
         public AbstractRoom originalRoom;
+        private boolean afterdoor;
 
-        ForkEventRoom(AbstractRoom originalRoom) {
+        ForkEventRoom(AbstractRoom originalRoom, boolean afterdoor) {
             this.originalRoom = originalRoom;
+            this.afterdoor = afterdoor;
         }
 
         @Override
         public void onPlayerEntry() {
             AbstractDungeon.overlayMenu.proceedButton.hide();
-            this.event = new GetForked();
+            this.event = new GetForked(afterdoor);
             this.event.onEnterRoom();
         }
     }
