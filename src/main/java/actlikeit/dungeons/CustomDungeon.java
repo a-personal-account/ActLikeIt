@@ -19,6 +19,7 @@ import com.megacrit.cardcrawl.scenes.AbstractScene;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class CustomDungeon extends AbstractDungeon {
@@ -208,35 +209,24 @@ public abstract class CustomDungeon extends AbstractDungeon {
 
     @Override
     protected void generateWeakEnemies(int count) {
-        generateMonstertype(count, Monstertype.Weak);
+        this.handleEnemyList(count, false, false);
     }
     @Override
     protected void generateStrongEnemies(int count) {
-        generateMonstertype(count, Monstertype.Strong);
+        this.handleEnemyList(count, true, false);
     }
     @Override
     protected void generateElites(int count) {
-        generateMonstertype(count, Monstertype.Elite);
+        this.handleEnemyList(count, false, true);
     }
 
-    protected void generateMonstertype(int count, Monstertype type) {
+    private void handleEnemyList(int count, boolean strong, boolean elites) {
         ArrayList<MonsterInfo> monsters = new ArrayList<>();
-        if(enemies.containsKey(type) && enemies.get(type).containsKey(this.id)) {
-            for(final String s : enemies.get(type).get(this.id)) {
-                float weight = 1.0F;
-                if(weights.containsKey(s)) {
-                    weight = weights.get(s);
-                }
-                monsters.add(new MonsterInfo(s, weight));
-                BaseMod.logger.error(s + '(' + weight + ')');
-            }
-        }
-
         MonsterInfo.normalizeWeights(monsters);
-        if(type == Monstertype.Strong) {
+        if(strong) {
             populateFirstStrongEnemy(monsters, generateExclusions());
         }
-        populateMonsterList(monsters, count, type == Monstertype.Elite);
+        populateMonsterList(monsters, count, elites);
     }
 
     @Override
@@ -330,61 +320,6 @@ public abstract class CustomDungeon extends AbstractDungeon {
         addAct(replaces, this);
     }
 
-
-    //This is where enemy data is stored.
-    public static Map<Monstertype, Map<String, ArrayList<String>>> enemies = new HashMap<>();
-    public static Map<String, Float> weights = new HashMap<>();
-
-    //These methods add the callback to your monstergroup to your dungeon, as well as basemod at the same time.
-    public void addMonster(String encounterID, BaseMod.GetMonsterGroup group, Monstertype type) {
-        CustomDungeon.addMonster(this.id, encounterID, "", group, type, 1.0F);
-    }
-    public void addMonster(String encounterID, String name, BaseMod.GetMonsterGroup group, Monstertype type) {
-        CustomDungeon.addMonster(this.id, encounterID, name, group, type, 1.0F);
-    }
-    public void addMonster(String encounterID, BaseMod.GetMonsterGroup group, Monstertype type, float weight) {
-        CustomDungeon.addMonster(this.id, encounterID, "", group, type, weight);
-    }
-    public void addMonster(String encounterID, String name, BaseMod.GetMonsterGroup group, Monstertype type, float weight) {
-        CustomDungeon.addMonster(this.id, encounterID, name, group, type, weight);
-    }
-    public static void addMonster(String dungeon, String encounterID, String name, BaseMod.GetMonsterGroup group, Monstertype type, float weight) {
-        Map tmp = enemies;
-        if(!tmp.containsKey(type)) {
-            tmp.put(type, new HashMap<>());
-        }
-        tmp = (Map)tmp.get(type);
-        if(!tmp.containsKey(dungeon)) {
-            tmp.put(dungeon, new ArrayList<>());
-        }
-
-        ArrayList<String> encounterIDs = (ArrayList)tmp.get(dungeon);
-        encounterIDs.add(encounterID);
-        if(weight != 1.0F) {
-            weights.put(encounterID, weight);
-        }
-
-        if(name.isEmpty()) {
-            BaseMod.addMonster(encounterID, group);
-        } else {
-            BaseMod.addMonster(encounterID, name, group);
-        }
-    }
-
-    //Just a passthrough to basemod, for convenience.
-    public void addBoss(String bossID, BaseMod.GetMonsterGroup boss, String mapIcon, String mapOutlineIcon) {
-        addBoss(this.id, bossID, boss, mapIcon, mapOutlineIcon);
-    }
-    public static void addBoss(String dungeon, String bossID, BaseMod.GetMonsterGroup boss, String mapIcon, String mapOutlineIcon) {
-        BaseMod.addMonster(bossID, boss);
-        BaseMod.addBoss(dungeon, bossID, mapIcon, mapOutlineIcon);
-    }
-
-    public enum Monstertype {
-        Weak,
-        Strong,
-        Elite
-    }
 
     public static final int EXORDIUM = 1;
     public static final int THECITY = 2;

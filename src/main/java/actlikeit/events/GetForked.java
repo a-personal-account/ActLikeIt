@@ -4,6 +4,7 @@ import actlikeit.ActLikeIt;
 import actlikeit.dungeons.CustomDungeon;
 import actlikeit.patches.ContinueOntoHeartPatch;
 import actlikeit.patches.GoToNextDungeonPatch;
+import basemod.patches.com.megacrit.cardcrawl.ui.buttons.ProceedButton.GoToNextDungeon;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.*;
@@ -11,6 +12,7 @@ import com.megacrit.cardcrawl.events.AbstractImageEvent;
 import com.megacrit.cardcrawl.events.GenericEventDialog;
 import com.megacrit.cardcrawl.localization.EventStrings;
 import com.megacrit.cardcrawl.neow.NeowRoom;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.ui.buttons.ProceedButton;
 
 import java.util.ArrayList;
@@ -120,11 +122,13 @@ public class GetForked extends AbstractImageEvent {
         CardCrawlGame.nextDungeon = dungeonID;
 
         AbstractDungeon.rs = AbstractDungeon.RenderScene.NORMAL;
-        if (AbstractDungeon.currMapNode.room instanceof GoToNextDungeonPatch.ForkEventRoom && ((GoToNextDungeonPatch.ForkEventRoom) AbstractDungeon.currMapNode.room).originalRoom != null) {
-            AbstractDungeon.currMapNode.room = ((GoToNextDungeonPatch.ForkEventRoom) AbstractDungeon.currMapNode.room).originalRoom;
+        if (AbstractDungeon.currMapNode.room instanceof GoToNextDungeon.ForkEventRoom && ((GoToNextDungeon.ForkEventRoom) AbstractDungeon.currMapNode.room).originalRoom != null) {
+            AbstractDungeon.currMapNode.room = ((GoToNextDungeon.ForkEventRoom) AbstractDungeon.currMapNode.room).originalRoom;
         }
         GenericEventDialog.hide();
 
+        CardCrawlGame.mode = CardCrawlGame.GameMode.GAMEPLAY;
+        AbstractDungeon.getCurrRoom().phase = AbstractRoom.RoomPhase.COMPLETE;
         AbstractDungeon.fadeOut();
         AbstractDungeon.isDungeonBeaten = true;
     }
