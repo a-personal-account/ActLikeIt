@@ -117,6 +117,10 @@ public abstract class CustomDungeon extends AbstractDungeon {
         CardCrawlGame.dungeon = this;
         setupMisc(cd, saveFile.act_num);
 
+        if(AbstractDungeon.lastCombatMetricKey == null) {
+            AbstractDungeon.lastCombatMetricKey = "";
+        }
+
         miscRng = new com.megacrit.cardcrawl.random.Random(Settings.seed + saveFile.floor_num);
         firstRoomChosen = true;
 

@@ -1,14 +1,11 @@
 package actlikeit.savefields;
 
 import actlikeit.ActLikeIt;
-import actlikeit.events.GetForked;
 import basemod.BaseMod;
-import basemod.ModPanel;
 import basemod.abstracts.CustomSavable;
 import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;
 import basemod.interfaces.StartActSubscriber;
-import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.*;
 import com.megacrit.cardcrawl.localization.EventStrings;
@@ -34,7 +31,6 @@ public class BreadCrumbs implements CustomSavable<Map<Integer, String>>,
 
     @Override
     public void receivePostInitialize() {
-        BaseMod.addEvent(GetForked.ID, GetForked.class);
         BaseMod.addSaveField("ActLikeIt:breadCrumbs", bc);
 
         ElitesSlain.initialize(); //Doing this means I don't have to subscribe ElitesSlain to BaseMod.
