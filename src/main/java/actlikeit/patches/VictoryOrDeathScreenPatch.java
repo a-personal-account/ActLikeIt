@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class VictoryOrDeathScreenPatch {
-    //Forget this for now. Asked Casey to make it much easier for us to do score stuff, and then this would change massively.
-
     @SpirePatch(
             clz = VictoryScreen.class,
             method = "createGameOverStats"
@@ -81,7 +79,6 @@ public class VictoryOrDeathScreenPatch {
             int num = 0;
             if(!displayDefaults && !customact) {
                 //display default elites slain thing
-                //calcscore needs to be patched, too?
                 switch(i) {
                     case 2: //the city
                         localizedString = ((ScoreBonusStrings)ReflectionHacks.getPrivateStatic(DeathScreen.class, "CITY_ELITE")).NAME;
