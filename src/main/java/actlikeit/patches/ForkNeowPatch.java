@@ -26,20 +26,22 @@ public class ForkNeowPatch {
     )
     //Sets a forkevent just before the Neow room is created
     public static SpireReturn<Void> Insert(Exordium __instance, AbstractPlayer p, ArrayList bleh) {
-        ArrayList<String> availableActs = new ArrayList<>();
-        if(CustomDungeon.actnumbers.containsKey(CustomDungeon.EXORDIUM)) {
-            for(final String s : CustomDungeon.actnumbers.get(CustomDungeon.EXORDIUM)) {
-                CustomDungeon cd = CustomDungeon.dungeons.get(s);
-                if(!cd.finalAct) {
-                    availableActs.add(s);
+        if(AbstractDungeon.floorNum < 1) {
+            ArrayList<String> availableActs = new ArrayList<>();
+            if (CustomDungeon.actnumbers.containsKey(CustomDungeon.EXORDIUM)) {
+                for (final String s : CustomDungeon.actnumbers.get(CustomDungeon.EXORDIUM)) {
+                    CustomDungeon cd = CustomDungeon.dungeons.get(s);
+                    if (!cd.finalAct) {
+                        availableActs.add(s);
+                    }
                 }
             }
-        }
-        if(!availableActs.isEmpty()) {
-            AbstractDungeon.actNum = CustomDungeon.EXORDIUM - 1;
-            AbstractDungeon.currMapNode.room = new GoToNextDungeonPatch.ForkEventRoom(null, false);
-            AbstractDungeon.currMapNode.room.onPlayerEntry();
-            return SpireReturn.Return(null);
+            if (!availableActs.isEmpty()) {
+                AbstractDungeon.actNum = CustomDungeon.EXORDIUM - 1;
+                AbstractDungeon.currMapNode.room = new GoToNextDungeonPatch.ForkEventRoom(null, false);
+                AbstractDungeon.currMapNode.room.onPlayerEntry();
+                return SpireReturn.Return(null);
+            }
         }
 
         return SpireReturn.Continue();

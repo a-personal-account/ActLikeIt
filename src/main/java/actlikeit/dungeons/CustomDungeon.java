@@ -11,9 +11,12 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.*;
 import com.megacrit.cardcrawl.events.AbstractEvent;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.map.MapRoomNode;
+import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.monsters.MonsterInfo;
 import com.megacrit.cardcrawl.neow.NeowRoom;
+import com.megacrit.cardcrawl.rewards.RewardItem;
 import com.megacrit.cardcrawl.rooms.EmptyRoom;
 import com.megacrit.cardcrawl.rooms.EventRoom;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
@@ -22,7 +25,6 @@ import com.megacrit.cardcrawl.scenes.AbstractScene;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public abstract class CustomDungeon extends AbstractDungeon {
@@ -35,7 +37,6 @@ public abstract class CustomDungeon extends AbstractDungeon {
     public int strongpreset;
     public int elitepreset;
     protected boolean genericEvents;
-    protected AbstractScene savedScene;
     protected Color savedFadeColor;
     public boolean finalAct;
     private Class<? extends AbstractEvent> onEnter = null;
@@ -45,23 +46,22 @@ public abstract class CustomDungeon extends AbstractDungeon {
 
     private String eventImg;
 
-    public CustomDungeon(AbstractScene scene, String NAME, String ID) {
-        this(scene, NAME, ID, "images/ui/event/panel.png", true);
+    public CustomDungeon(String NAME, String ID) {
+        this(NAME, ID, "images/ui/event/panel.png", true);
     }
-    public CustomDungeon(AbstractScene scene, String NAME, String ID, boolean genericEvents) {
-        this(scene, NAME, ID, "images/ui/event/panel.png", genericEvents);
+    public CustomDungeon(String NAME, String ID, boolean genericEvents) {
+        this(NAME, ID, "images/ui/event/panel.png", genericEvents);
     }
-    public CustomDungeon(AbstractScene scene, String NAME, String ID, String eventImg) {
-        this(scene, NAME, ID, eventImg, true);
+    public CustomDungeon(String NAME, String ID, String eventImg) {
+        this(NAME, ID, eventImg, true);
     }
-    public CustomDungeon(AbstractScene scene, String NAME, String ID, String eventImg, boolean genericEvents) {
-        this(scene, NAME, ID, eventImg, genericEvents, 2, 12, 10);
+    public CustomDungeon(String NAME, String ID, String eventImg, boolean genericEvents) {
+        this(NAME, ID, eventImg, genericEvents, 2, 12, 10);
     }
-    public CustomDungeon(AbstractScene scene, String NAME, String ID, String eventImg, boolean genericEvents, int weakpreset, int strongpreset, int elitepreset) {
+    public CustomDungeon(String NAME, String ID, String eventImg, boolean genericEvents, int weakpreset, int strongpreset, int elitepreset) {
         super(NAME, ID, AbstractDungeon.player, new ArrayList<>());
         this.id = ID;
         this.name = NAME;
-        this.savedScene = scene;
         this.eventImg = eventImg;
         this.genericEvents = genericEvents;
         this.savedFadeColor = Color.valueOf("0f220aff");
@@ -85,7 +85,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
 
         AbstractDungeon.currMapNode = new MapRoomNode(0, -1);
 
-        if(cd.onEnter != null || AbstractDungeon.floorNum < 1) {
+        if(cd.onEnter != null || AbstractDungeon.actNum <= 1) {
             try {
                 if(cd.onEnter == null) {
                     throw new ArithmeticException();
@@ -117,7 +117,6 @@ public abstract class CustomDungeon extends AbstractDungeon {
     public CustomDungeon(CustomDungeon cd, AbstractPlayer p, SaveFile saveFile) {
         super(cd.name, p, saveFile);
 
-        CardCrawlGame.dungeon = this;
         setupMisc(cd, saveFile.act_num);
 
         if(AbstractDungeon.lastCombatMetricKey == null) {
@@ -131,10 +130,10 @@ public abstract class CustomDungeon extends AbstractDungeon {
     }
     private void setupMisc(CustomDungeon cd, int actNum) {
         //Copying data from the instance that was used for initialization.
-        if (scene != null && scene != cd.savedScene) {
+        if (scene != null) {
             scene.dispose();
         }
-        scene = cd.savedScene;
+        scene = DungeonScene();
         fadeColor = cd.savedFadeColor;
         this.name = cd.name;
         //event bg needs to be set here, because it can't be set when the constructor of AbstractDungeon is executed yet.
@@ -166,6 +165,8 @@ public abstract class CustomDungeon extends AbstractDungeon {
             }
         }
     }
+
+    public abstract AbstractScene DungeonScene();
 
     //Use of Reflection allows for instantiation, only requiring the 3 simple, mandatory constructors.
     public CustomDungeon fromProgression(AbstractPlayer p) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
@@ -209,6 +210,15 @@ public abstract class CustomDungeon extends AbstractDungeon {
         this.onEnter = event;
     }
 
+    public String getBodyText() {
+        return "";
+    }
+    public String getOptionText() {
+        return "";
+    }
+    public String getAfterSelectText() {
+        return "";
+    }
 
     @Override
     protected void generateMonsters() {
@@ -242,21 +252,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
 
     @Override
     protected ArrayList<String> generateExclusions() {
-        // TODO: This is copied from TheCity
         ArrayList<String> retVal = new ArrayList<>();
-        /* switch (monsterList.get(monsterList.size() - 1)) {
-            case "Spheric Guardian":
-                retVal.add("Sentry and Sphere");
-                break;
-            case "3 Byrds":
-                retVal.add("Chosen and Byrds");
-                break;
-            case "Chosen":
-                retVal.add("Chosen and Byrds");
-                retVal.add("Cultist and Chosen");
-                break;
-        } */
-        // TODO: THIS IS EXCLUSIVE ENCOUNTERS
         return retVal;
     }
 
@@ -352,5 +348,140 @@ public abstract class CustomDungeon extends AbstractDungeon {
             BaseMod.logger.error("Adding Temp Music key: \"" + key + "\"");
             tempmusic.put(key, path);
         }
+    }
+
+    public static void playTempMusic(String key) {
+        CardCrawlGame.music.silenceTempBgmInstantly();
+        CardCrawlGame.music.silenceBGM();
+        AbstractDungeon.scene.fadeOutAmbiance();
+        CardCrawlGame.music.playTempBGM(key);
+    }
+    public static void playTempMusicInstantly(String key) {
+        CardCrawlGame.music.silenceTempBgmInstantly();
+        CardCrawlGame.music.silenceBGMInstantly();
+        AbstractDungeon.scene.fadeOutAmbiance();
+        CardCrawlGame.music.playTempBgmInstantly(key);
+    }
+    public static void resumeMainMusic() {
+        CardCrawlGame.music.silenceTempBgmInstantly();
+        AbstractDungeon.scene.fadeInAmbiance();
+        CardCrawlGame.music.unsilenceBGM();
+    }
+
+    //Call this function in a boss' die(...) function to add a specific relic to it.
+    public static void addRelicReward(String relicID) {
+        if(!AbstractDungeon.player.hasRelic(relicID)) {
+            boolean found = false;
+            for (final RewardItem ri : AbstractDungeon.getCurrRoom().rewards) {
+                if (ri.type == RewardItem.RewardType.RELIC && ri.relic != null && ri.relic.relicId.equals(relicID)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                AbstractDungeon.getCurrRoom().rewards.add(new RewardItem(RelicLibrary.getRelic(relicID).makeCopy()));
+            }
+        }
+    }
+
+    //Wrappers that combine BaseMod's addMonster and addEncounter methods.
+    //Weak encounters
+    public void addMonster(String encounterID, BaseMod.GetMonster monster) {
+        addMonster(encounterID, () -> new MonsterGroup(monster.get()));
+    }
+    public void addMonster(String encounterID, BaseMod.GetMonster monster, float weight) {
+        addMonster(encounterID, () -> new MonsterGroup(monster.get()), weight);
+    }
+    public void addMonster(String encounterID, String encounterName, BaseMod.GetMonster monster) {
+        addMonster(encounterID, encounterName, () -> new MonsterGroup(monster.get()));
+    }
+    public void addMonster(String encounterID, String encounterName, BaseMod.GetMonster monster, float weight) {
+        addMonster(encounterID, encounterName, () -> new MonsterGroup(monster.get()), weight);
+    }
+    public void addMonster(String encounterID, BaseMod.GetMonsterGroup monster) {
+        addMonster(encounterID, monster, 1F);
+    }
+    public void addMonster(String encounterID, BaseMod.GetMonsterGroup monster, float weight) {
+        BaseMod.addMonster(encounterID, monster);
+        BaseMod.addMonsterEncounter(this.id, new MonsterInfo(encounterID, weight));
+    }
+    public void addMonster(String encounterID, String encounterName, BaseMod.GetMonsterGroup monster) {
+        addMonster(encounterID, encounterName, monster, 1F);
+    }
+    public void addMonster(String encounterID, String encounterName, BaseMod.GetMonsterGroup monster, float weight) {
+        BaseMod.addMonster(encounterID, encounterName, monster);
+        BaseMod.addMonsterEncounter(this.id, new MonsterInfo(encounterID, weight));
+    }
+
+    //Strong encounters
+    public void addStrongMonster(String encounterID, BaseMod.GetMonster monster) {
+        addStrongMonster(encounterID, () -> new MonsterGroup(monster.get()));
+    }
+    public void addStrongMonster(String encounterID, BaseMod.GetMonster monster, float weight) {
+        addStrongMonster(encounterID, () -> new MonsterGroup(monster.get()), weight);
+    }
+    public void addStrongMonster(String encounterID, String encounterName, BaseMod.GetMonster monster) {
+        addStrongMonster(encounterID, encounterName, () -> new MonsterGroup(monster.get()));
+    }
+    public void addStrongMonster(String encounterID, String encounterName, BaseMod.GetMonster monster, float weight) {
+        addStrongMonster(encounterID, encounterName, () -> new MonsterGroup(monster.get()), weight);
+    }
+    public void addStrongMonster(String encounterID, BaseMod.GetMonsterGroup monster) {
+        addStrongMonster(encounterID, monster, 1F);
+    }
+    public void addStrongMonster(String encounterID, BaseMod.GetMonsterGroup monster, float weight) {
+        BaseMod.addMonster(encounterID, monster);
+        BaseMod.addStrongMonsterEncounter(this.id, new MonsterInfo(encounterID, weight));
+    }
+    public void addStrongMonster(String encounterID, String encounterName, BaseMod.GetMonsterGroup monster) {
+        addStrongMonster(encounterID, encounterName, monster, 1F);
+    }
+    public void addStrongMonster(String encounterID, String encounterName, BaseMod.GetMonsterGroup monster, float weight) {
+        BaseMod.addMonster(encounterID, encounterName, monster);
+        BaseMod.addStrongMonsterEncounter(this.id, new MonsterInfo(encounterID, weight));
+    }
+
+    //Elite encounters
+    public void addEliteEncounter(String encounterID, BaseMod.GetMonster monster) {
+        addEliteEncounter(encounterID, () -> new MonsterGroup(monster.get()));
+    }
+    public void addEliteEncounter(String encounterID, BaseMod.GetMonster monster, float weight) {
+        addEliteEncounter(encounterID, () -> new MonsterGroup(monster.get()), weight);
+    }
+    public void addEliteEncounter(String encounterID, String encounterName, BaseMod.GetMonster monster) {
+        addEliteEncounter(encounterID, encounterName, () -> new MonsterGroup(monster.get()));
+    }
+    public void addEliteEncounter(String encounterID, String encounterName, BaseMod.GetMonster monster, float weight) {
+        addEliteEncounter(encounterID, encounterName, () -> new MonsterGroup(monster.get()), weight);
+    }
+    public void addEliteEncounter(String encounterID, BaseMod.GetMonsterGroup monster) {
+        addEliteEncounter(encounterID, monster, 1F);
+    }
+    public void addEliteEncounter(String encounterID, BaseMod.GetMonsterGroup monster, float weight) {
+        BaseMod.addMonster(encounterID, monster);
+        BaseMod.addEliteEncounter(this.id, new MonsterInfo(encounterID, weight));
+    }
+    public void addEliteEncounter(String encounterID, String encounterName, BaseMod.GetMonsterGroup monster) {
+        addEliteEncounter(encounterID, encounterName, monster, 1F);
+    }
+    public void addEliteEncounter(String encounterID, String encounterName, BaseMod.GetMonsterGroup monster, float weight) {
+        BaseMod.addMonster(encounterID, encounterName, monster);
+        BaseMod.addEliteEncounter(this.id, new MonsterInfo(encounterID, weight));
+    }
+
+    //Boss encounters
+    public void addBoss(String encounterID, BaseMod.GetMonster monster, String mapIcon, String mapIconOutline) {
+        addBoss(encounterID, () -> new MonsterGroup(monster.get()), mapIcon, mapIconOutline);
+    }
+    public void addBoss(String encounterID, BaseMod.GetMonsterGroup monster, String mapIcon, String mapIconOutline) {
+        BaseMod.addMonster(encounterID, monster);
+        BaseMod.addBoss(this.id, encounterID, mapIcon, mapIconOutline);
+    }
+    public void addBoss(String encounterID, String encounterName, BaseMod.GetMonster monster, String mapIcon, String mapIconOutline) {
+        addBoss(encounterID, encounterName, () -> new MonsterGroup(monster.get()), mapIcon, mapIconOutline);
+    }
+    public void addBoss(String encounterID, String encounterName, BaseMod.GetMonsterGroup monster, String mapIcon, String mapIconOutline) {
+        BaseMod.addMonster(encounterID, encounterName, monster);
+        BaseMod.addBoss(this.id, encounterID, mapIcon, mapIconOutline);
     }
 }

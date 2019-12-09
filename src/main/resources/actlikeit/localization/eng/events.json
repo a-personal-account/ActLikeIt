@@ -1,12 +1,23 @@
 {
   "actlikeit:ForkInTheRoad": {
-    "NAME": "Fork in the Road",
+    "NAME": "Choose your Destiny",
     "DESCRIPTIONS": [
-      "You ascend further. NL There is a junction in the path ahead. NL You consider your options."
+      "You find yourself in darkness...",
+      "Atop a staircase, you glimpse buildings as far as the eye can see.",
+      "The city gives way to a craggy cave speckled with bizarre shapes.",
+      "You hear a heartbeat in the darkness that awaits you...",
+      "The heartbeat now reverberates all around you.",
+      "Something in the distance is calling you..."
     ],
     "OPTIONS": [
-      "[Go Somewhere] Choose randomly.",
-      "Approach the Heart"
+      "[Go Somewhere] Choose randomly",
+      "Awaken",
+      "Ascend to the vast City",
+      "Follow the twisting path",
+      "Approach the Heart",
+      "Continue following the Heartbeat",
+      "Ascend",
+      "Follow the Call"
     ]
   }
 }
