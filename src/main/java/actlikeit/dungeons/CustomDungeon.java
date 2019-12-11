@@ -1,7 +1,9 @@
 package actlikeit.dungeons;
 
+import actlikeit.savefields.BehindTheScenesActNum;
 import basemod.BaseMod;
 import basemod.ReflectionHacks;
+import basemod.devcommands.act.ActCommand;
 import com.badlogic.gdx.graphics.Color;
 import com.megacrit.cardcrawl.audio.MainMusic;
 import com.megacrit.cardcrawl.audio.MusicMaster;
@@ -80,12 +82,12 @@ public abstract class CustomDungeon extends AbstractDungeon {
     public CustomDungeon(CustomDungeon cd, AbstractPlayer p, ArrayList<String> emptyList) {
         super(cd.name, cd.id, p, emptyList);
 
-        setupMisc(cd, AbstractDungeon.actNum);
+        setupMisc(cd, BehindTheScenesActNum.getActNum());
 
 
         AbstractDungeon.currMapNode = new MapRoomNode(0, -1);
 
-        if(cd.onEnter != null || AbstractDungeon.actNum <= 1) {
+        if(cd.onEnter != null || BehindTheScenesActNum.getActNum() == 1) {
             try {
                 if(cd.onEnter == null) {
                     throw new ArithmeticException();
@@ -117,7 +119,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
     public CustomDungeon(CustomDungeon cd, AbstractPlayer p, SaveFile saveFile) {
         super(cd.name, p, saveFile);
 
-        setupMisc(cd, saveFile.act_num);
+        setupMisc(cd, BehindTheScenesActNum.getActNum());
 
         if(AbstractDungeon.lastCombatMetricKey == null) {
             AbstractDungeon.lastCombatMetricKey = "";
@@ -139,7 +141,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
         //event bg needs to be set here, because it can't be set when the constructor of AbstractDungeon is executed yet.
         AbstractDungeon.eventBackgroundImg = ImageMaster.loadImage(cd.eventImg);
         initializeLevelSpecificChances();
-        mapRng = new com.megacrit.cardcrawl.random.Random(Settings.seed + actNum * 100);
+        mapRng = new com.megacrit.cardcrawl.random.Random(Settings.seed + AbstractDungeon.actNum * 100);
         generateMap();
 
         ArrayList<MainMusic> tracks = (ArrayList) ReflectionHacks.getPrivate(CardCrawlGame.music, MusicMaster.class, "mainTrack");
@@ -315,6 +317,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
                 actnumbers.get(actReplacement).add(cd.id);
             }
             dungeons.put(cd.id, cd);
+            ActCommand.addAct(cd.id, actReplacement);
         } else {
             BaseMod.logger.error("Act \"" + cd.id + "\" already present.");
         }

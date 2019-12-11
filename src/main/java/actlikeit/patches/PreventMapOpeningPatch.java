@@ -1,12 +1,15 @@
 package actlikeit.patches;
 
 import actlikeit.dungeons.CustomDungeon;
+import actlikeit.savefields.BehindTheScenesActNum;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.DungeonMapScreen;
+import com.megacrit.cardcrawl.screens.DungeonTransitionScreen;
 import javassist.CtBehavior;
 
 
@@ -21,9 +24,7 @@ public class PreventMapOpeningPatch {
             locator = Locator.class
     )
     public static SpireReturn<Void> Insert(CardCrawlGame __instance) {
-        if(AbstractDungeon.floorNum <= 1 ||
-                (CustomDungeon.dungeons.containsKey(CardCrawlGame.nextDungeon) && CustomDungeon.dungeons.get(CardCrawlGame.nextDungeon).hasEvent())) {
-
+        if(CustomDungeon.dungeons.containsKey(CardCrawlGame.nextDungeon) && (CustomDungeon.dungeons.get(CardCrawlGame.nextDungeon).hasEvent() || BehindTheScenesActNum.getActNum() == 1)) {
             InputHelper.updateLast();
             if (CInputHelper.controller != null) {
                 CInputHelper.updateLast();

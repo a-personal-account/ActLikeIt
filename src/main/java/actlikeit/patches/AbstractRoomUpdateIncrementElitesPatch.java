@@ -4,13 +4,11 @@ import actlikeit.savefields.ElitesSlain;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 @SpirePatch(
         clz = AbstractRoom.class,
@@ -23,12 +21,7 @@ public class AbstractRoomUpdateIncrementElitesPatch {
             locator = Locator.class
     )
     public static void Insert(AbstractRoom __instance) {
-        Map<Integer, Integer> killedElites = ElitesSlain.getKilledElites();
-        if(!killedElites.containsKey(AbstractDungeon.actNum)) {
-            killedElites.put(AbstractDungeon.actNum, 1);
-        } else {
-            killedElites.put(AbstractDungeon.actNum, killedElites.get(AbstractDungeon.actNum) + 1);
-        }
+        ElitesSlain.kill();
     }
 
     public static class Locator extends SpireInsertLocator {

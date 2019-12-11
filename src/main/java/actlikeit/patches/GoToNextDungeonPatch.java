@@ -2,7 +2,7 @@ package actlikeit.patches;
 
 import actlikeit.dungeons.CustomDungeon;
 import actlikeit.events.GetForked;
-import basemod.BaseMod;
+import actlikeit.savefields.BehindTheScenesActNum;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -22,14 +22,14 @@ public class GoToNextDungeonPatch {
     )
     public static SpireReturn<Void> Insert(ProceedButton __instance, AbstractRoom room) {
         //Trigger the fork event if there is a custom act available here.
-        int nextActs = CustomDungeon.actnumbers.containsKey(AbstractDungeon.actNum + 1) ? CustomDungeon.actnumbers.get(AbstractDungeon.actNum + 1).size() : 0;
-        if(((nextActs > 0 && AbstractDungeon.actNum <= CustomDungeon.THEBEYOND) || nextActs > 1)
-                || (Settings.isEndless && AbstractDungeon.actNum >= 3 && (CustomDungeon.actnumbers.containsKey(CustomDungeon.EXORDIUM) || nextActs > 0))) {
+        int nextActs = CustomDungeon.actnumbers.containsKey(BehindTheScenesActNum.getActNum() + 1) ? CustomDungeon.actnumbers.get(BehindTheScenesActNum.getActNum() + 1).size() : 0;
+        if(((nextActs > 0 && BehindTheScenesActNum.getActNum() <= CustomDungeon.THEBEYOND) || nextActs > 1)
+                || (Settings.isEndless && BehindTheScenesActNum.getActNum() >= 3 && (CustomDungeon.actnumbers.containsKey(CustomDungeon.EXORDIUM) || nextActs > 0))) {
             getForked();
 
             return SpireReturn.Return(null);
         } else {
-            switch(AbstractDungeon.actNum + 1) {
+            switch(BehindTheScenesActNum.getActNum() + 1) {
                 case CustomDungeon.THECITY:
                     CardCrawlGame.nextDungeon = TheCity.ID;
                     break;
@@ -39,8 +39,8 @@ public class GoToNextDungeonPatch {
                 default:
                     if(Settings.isEndless || AbstractDungeon.floorNum < 1) {
                         CardCrawlGame.nextDungeon = Exordium.ID;
-                        if(AbstractDungeon.actNum >= 3) {
-                            AbstractDungeon.actNum = 0;
+                        if(BehindTheScenesActNum.getActNum() >= 3) {
+                            BehindTheScenesActNum.resetActNum();
                         }
                     } else {
                         CardCrawlGame.nextDungeon = TheEnding.ID;

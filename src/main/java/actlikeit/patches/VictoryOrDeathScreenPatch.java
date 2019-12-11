@@ -4,23 +4,16 @@ import actlikeit.ActLikeIt;
 import actlikeit.dungeons.CustomDungeon;
 import actlikeit.savefields.BreadCrumbs;
 import actlikeit.savefields.ElitesSlain;
-import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.dungeons.TheBeyond;
-import com.megacrit.cardcrawl.dungeons.TheCity;
-import com.megacrit.cardcrawl.dungeons.TheEnding;
-import com.megacrit.cardcrawl.localization.ScoreBonusStrings;
 import com.megacrit.cardcrawl.screens.DeathScreen;
 import com.megacrit.cardcrawl.screens.GameOverStat;
 import com.megacrit.cardcrawl.screens.VictoryScreen;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 public class VictoryOrDeathScreenPatch {
     @SpirePatch(
@@ -68,42 +61,46 @@ public class VictoryOrDeathScreenPatch {
     }
 
     private static void doThing(ArrayList<GameOverStat> stats) {
-        Map<Integer, Integer> elitesKilled = ElitesSlain.getKilledElites();
+        Map<String, ElitesSlain.Entry> elitesKilled = ElitesSlain.getKilledElites();
         Map<Integer, String> breadcrumbs = BreadCrumbs.getBreadCrumbs();
         String[] parts = CardCrawlGame.languagePack.getScoreString(ActLikeIt.makeID("ElitesKilled")).DESCRIPTIONS;
-        boolean displayDefaults = (CardCrawlGame.dungeon instanceof TheCity || CardCrawlGame.dungeon instanceof TheBeyond || CardCrawlGame.dungeon instanceof TheEnding);
 
-        for(int i = 1; i <= AbstractDungeon.actNum; i++) {
-            boolean customact = breadcrumbs.containsKey(i);
-            String localizedString = null;
-            int num = 0;
-            if(!displayDefaults && !customact) {
-                //display default elites slain thing
-                switch(i) {
-                    case 2: //the city
-                        localizedString = ((ScoreBonusStrings)ReflectionHacks.getPrivateStatic(DeathScreen.class, "CITY_ELITE")).NAME;
-                        num = CardCrawlGame.elites2Slain;
-                        break;
-                    case 3: //the beyond
-                        localizedString = ((ScoreBonusStrings)ReflectionHacks.getPrivateStatic(DeathScreen.class, "BEYOND_ELITE")).NAME;
-                        num = CardCrawlGame.elites3Slain;
-                        break;
+        ArrayList<ActData> relevantActs = new ArrayList<>();
 
-                    default:
-                        continue;
-
+        Set<String> used = new HashSet<>();
+        //Filter the breadcrumbs
+        for(final Integer i : breadcrumbs.keySet()) {
+            String dungeonID = breadcrumbs.get(i);
+            if(!used.contains(dungeonID)) {
+                used.add(dungeonID);
+                if(elitesKilled.containsKey(dungeonID)) {
+                    String localizedString;
+                    if (elitesKilled.containsKey(dungeonID)) {
+                        localizedString = parts[0] + CustomDungeon.dungeons.get(dungeonID).name + parts[2];
+                    } else {
+                        localizedString = parts[0] + parts[1] + " " + i + parts[2];
+                    }
+                    relevantActs.add(new ActData(localizedString, elitesKilled.get(dungeonID).actnum, elitesKilled.get(dungeonID).kills));
                 }
-            } else if(customact) {
-                if(CustomDungeon.dungeons.containsKey(breadcrumbs.get(i))) {
-                    localizedString = parts[0] + CustomDungeon.dungeons.get(breadcrumbs.get(i)).name + parts[2];
-                } else {
-                    localizedString = parts[0] + parts[1] + " " + i + parts[2];
-                }
-                num = elitesKilled.containsKey(i) ? elitesKilled.get(i) : 0;
-            } else {
-                continue;
             }
-            stats.add(new GameOverStat(localizedString + " (" + num + ")", null, Integer.toString(num * 10 * i)));
+        }
+
+        //Sort by actnumber, then add to the stats.
+        Collections.sort(relevantActs, Comparator.comparingInt(a -> a.actnum));
+        for(final ActData data : relevantActs) {
+            stats.add(new GameOverStat(data.localizedString + " (" + data.kills + ")", null, Integer.toString(data.kills * 10 * data.actnum)));
+        }
+    }
+
+    static class ActData {
+        public String localizedString;
+        public int actnum;
+        public int kills;
+
+        public ActData(String localizedString, int actnum, int kills) {
+            this.localizedString = localizedString;
+            this.actnum = actnum;
+            this.kills = kills;
         }
     }
 }

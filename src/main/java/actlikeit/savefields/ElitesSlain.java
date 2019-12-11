@@ -1,44 +1,63 @@
 package actlikeit.savefields;
 
 import actlikeit.ActLikeIt;
+import actlikeit.dungeons.CustomDungeon;
 import basemod.BaseMod;
 import basemod.abstracts.CustomSavable;
-import basemod.interfaces.EditStringsSubscriber;
-import basemod.interfaces.StartActSubscriber;
-import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.dungeons.*;
-import com.megacrit.cardcrawl.localization.EventStrings;
-import com.megacrit.cardcrawl.localization.ScoreBonusStrings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ElitesSlain implements CustomSavable<Map<Integer, Integer>> {
+public class ElitesSlain implements CustomSavable<Map<String, ElitesSlain.Entry>> {
 
-    private Map<Integer, Integer> killedElites = new HashMap<>();
+    private Map<String, Entry> killedElites = new HashMap<>();
     private static ElitesSlain bc;
-    public static Map<Integer, Integer> getKilledElites() {
+    public static Map<String, Entry> getKilledElites() {
         return bc.killedElites;
     }
 
     public static void initialize() {
-        BaseMod.addSaveField("ActLikeIt:elitesSlain", bc = new ElitesSlain());
+        BaseMod.addSaveField(ActLikeIt.makeID("elitesSlain"), bc = new ElitesSlain());
     }
 
 
     @Override
-    public Map<Integer, Integer> onSave() {
+    public Map<String, Entry> onSave() {
         BaseMod.logger.info("Saving ElitesSlain Map with size: " + killedElites.size());
         return killedElites;
     }
 
     @Override
-    public void onLoad(Map<Integer, Integer> loaded) {
+    public void onLoad(Map<String, Entry> loaded) {
         if (loaded != null) {
             killedElites = loaded;
         } else {
             killedElites = new HashMap<>();
         }
         BaseMod.logger.info("Loading ElitesSlain Map with size: " + killedElites.size());
+    }
+
+    public static void kill() {
+        if(CustomDungeon.dungeons.containsKey(AbstractDungeon.id)) {
+            if (!bc.killedElites.containsKey(AbstractDungeon.id)) {
+                bc.killedElites.put(AbstractDungeon.id, new ElitesSlain.Entry(BehindTheScenesActNum.getActNum()));
+            } else {
+                bc.killedElites.get(AbstractDungeon.id).kills++;
+            }
+        }
+    }
+
+    public static void reset() {
+        bc.killedElites.clear();
+    }
+
+    public static class Entry {
+        public int actnum;
+        public int kills;
+        public Entry(int actnum) {
+            this.actnum = actnum;
+            kills = 1;
+        }
     }
 }

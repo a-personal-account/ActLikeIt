@@ -37,7 +37,6 @@ public class ForkNeowPatch {
                 }
             }
             if (!availableActs.isEmpty()) {
-                AbstractDungeon.actNum = CustomDungeon.EXORDIUM - 1;
                 AbstractDungeon.currMapNode.room = new GoToNextDungeonPatch.ForkEventRoom(null, false);
                 AbstractDungeon.currMapNode.room.onPlayerEntry();
                 return SpireReturn.Return(null);

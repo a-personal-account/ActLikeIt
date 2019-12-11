@@ -6,8 +6,6 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.screens.DeathScreen;
 import com.megacrit.cardcrawl.screens.VictoryScreen;
 
-import java.util.Map;
-
 public class CalcFinalScorePatch {
     //Forget this for now. Asked Casey to make it much easier for us to do score stuff, and then this would change massively.
 
@@ -32,11 +30,9 @@ public class CalcFinalScorePatch {
     }
 
     private static int doThing(int tmp) {
-        Map<Integer, Integer> elitesKilled = ElitesSlain.getKilledElites();
-
         BaseMod.logger.error("BEFORE: " + tmp);
-        for(final Map.Entry<Integer, Integer> entry : elitesKilled.entrySet()) {
-            tmp += entry.getValue() * 10 * entry.getKey();
+        for(final ElitesSlain.Entry entry : ElitesSlain.getKilledElites().values()) {
+            tmp += entry.kills * 10 * entry.actnum;
         }
         BaseMod.logger.error("AFTER: " + tmp);
 

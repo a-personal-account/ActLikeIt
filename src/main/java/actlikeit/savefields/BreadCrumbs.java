@@ -31,33 +31,34 @@ public class BreadCrumbs implements CustomSavable<Map<Integer, String>>,
 
     @Override
     public void receivePostInitialize() {
-        BaseMod.addSaveField("ActLikeIt:breadCrumbs", bc);
+        BaseMod.addSaveField(ActLikeIt.makeID("breadCrumbs"), bc);
 
         ElitesSlain.initialize(); //Doing this means I don't have to subscribe ElitesSlain to BaseMod.
+        BehindTheScenesActNum.initialize();
     }
 
 
-    private void loadLocStrings(String language) {
-        BaseMod.loadCustomStringsFile(EventStrings.class, ActLikeIt.MOD_ID + "/localization/" + language + "/events.json");
-        BaseMod.loadCustomStringsFile(ScoreBonusStrings.class, ActLikeIt.MOD_ID + "/localization/" + language + "/score_bonuses.json");
+    private void loadLocStrings(Settings.GameLanguage language) {
+        BaseMod.loadCustomStringsFile(EventStrings.class, ActLikeIt.MOD_ID + "/localization/" + language.name().toLowerCase() + "/events.json");
+        BaseMod.loadCustomStringsFile(ScoreBonusStrings.class, ActLikeIt.MOD_ID + "/localization/" + language.name().toLowerCase() + "/score_bonuses.json");
     }
 
 
 
-    private String languageSupport() {
+    private Settings.GameLanguage languageSupport() {
         switch (Settings.language) {
             default:
-                return "eng";
+                return Settings.GameLanguage.ENG;
         }
     }
 
     @Override
     public void receiveEditStrings() {
-        String language = languageSupport();
+        Settings.GameLanguage language = languageSupport();
 
         // Load english first to avoid crashing if translation doesn't exist for something. Blatantly stolen from Vex.
-        loadLocStrings("eng");
-        if(!Settings.language.equals("eng")) {
+        loadLocStrings(Settings.GameLanguage.ENG);
+        if(!Settings.language.equals(Settings.GameLanguage.ENG)) {
             try {
                 loadLocStrings(language);
             } catch(Exception ex) {
@@ -69,10 +70,6 @@ public class BreadCrumbs implements CustomSavable<Map<Integer, String>>,
     @Override
     public void receiveStartAct() {
         if(AbstractDungeon.id != null) {
-            if (AbstractDungeon.actNum <= 1) {
-                BaseMod.logger.info("breadcrumbs cleared!");
-                breadCrumbs.clear();
-            }
             switch (AbstractDungeon.id) {
                 case Exordium.ID:
                 case TheCity.ID:

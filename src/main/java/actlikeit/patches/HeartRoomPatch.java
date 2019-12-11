@@ -1,6 +1,7 @@
 package actlikeit.patches;
 
 import actlikeit.dungeons.CustomDungeon;
+import actlikeit.savefields.BehindTheScenesActNum;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -18,8 +19,8 @@ public class HeartRoomPatch {
         //Just before the heart room, trigger a fork event. If you come here from said fork event, it continues as it normally would.
         if(!(AbstractDungeon.currMapNode.room instanceof GoToNextDungeonPatch.ForkEventRoom)) {
             ArrayList<String> availableActs = new ArrayList<>();
-            if (CustomDungeon.actnumbers.containsKey(AbstractDungeon.actNum + 1)) {
-                for (final String s : CustomDungeon.actnumbers.get(AbstractDungeon.actNum + 1)) {
+            if (CustomDungeon.actnumbers.containsKey(BehindTheScenesActNum.getActNum() + 1)) {
+                for (final String s : CustomDungeon.actnumbers.get(BehindTheScenesActNum.getActNum() + 1)) {
                     CustomDungeon cd = CustomDungeon.dungeons.get(s);
                     if (!cd.finalAct) {
                         availableActs.add(s);

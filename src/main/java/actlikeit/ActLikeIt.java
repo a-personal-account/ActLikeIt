@@ -34,6 +34,4 @@ public class ActLikeIt implements
                 badgeTexture, "Act like it", "Razash",
                 "Framework for creating custom acts", modPanel);
     }
-
-
 }

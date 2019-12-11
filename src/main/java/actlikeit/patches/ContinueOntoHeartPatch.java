@@ -1,6 +1,7 @@
 package actlikeit.patches;
 
 import actlikeit.dungeons.CustomDungeon;
+import actlikeit.savefields.BehindTheScenesActNum;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -25,7 +26,7 @@ public class ContinueOntoHeartPatch {
     public static void Insert(ProceedButton __instance) {
         //Mostly copied from the basegame and applied to custom dungeons on or higher than Beyond's level.
         if (AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss) {
-            if (AbstractDungeon.actNum >= CustomDungeon.THEBEYOND && !(CardCrawlGame.dungeon instanceof TheBeyond)) {
+            if (BehindTheScenesActNum.getActNum() >= CustomDungeon.THEBEYOND && !(CardCrawlGame.dungeon instanceof TheBeyond)) {
                 if (AbstractDungeon.ascensionLevel >= 20 && AbstractDungeon.bossList.size() == 2) {
                     try {
                         Method yuckyPrivateMethod = ProceedButton.class.getDeclaredMethod("goToDoubleBoss");
