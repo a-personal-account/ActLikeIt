@@ -142,7 +142,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
         AbstractDungeon.eventBackgroundImg = ImageMaster.loadImage(cd.eventImg);
         initializeLevelSpecificChances();
         mapRng = new com.megacrit.cardcrawl.random.Random(Settings.seed + AbstractDungeon.actNum * 100);
-        generateMap();
+        makeMap();
 
         ArrayList<MainMusic> tracks = (ArrayList) ReflectionHacks.getPrivate(CardCrawlGame.music, MusicMaster.class, "mainTrack");
         for(final MainMusic t : tracks) {
@@ -169,6 +169,10 @@ public abstract class CustomDungeon extends AbstractDungeon {
     }
 
     public abstract AbstractScene DungeonScene();
+
+    public boolean Ending() {
+        return false;
+    }
 
     //Use of Reflection allows for instantiation, only requiring the 3 simple, mandatory constructors.
     public CustomDungeon fromProgression(AbstractPlayer p) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {

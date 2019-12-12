@@ -27,16 +27,18 @@ public class ContinueOntoHeartPatch {
         //Mostly copied from the basegame and applied to custom dungeons on or higher than Beyond's level.
         if (AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss) {
             if (BehindTheScenesActNum.getActNum() >= CustomDungeon.THEBEYOND && !(CardCrawlGame.dungeon instanceof TheBeyond)) {
-                if (AbstractDungeon.ascensionLevel >= 20 && AbstractDungeon.bossList.size() == 2) {
-                    try {
-                        Method yuckyPrivateMethod = ProceedButton.class.getDeclaredMethod("goToDoubleBoss");
-                        yuckyPrivateMethod.setAccessible(true);
-                        yuckyPrivateMethod.invoke(__instance);
-                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                        e.printStackTrace();
+                if(Settings.isEndless || !(CardCrawlGame.dungeon instanceof CustomDungeon) || !((CustomDungeon) CardCrawlGame.dungeon).Ending()) {
+                    if (AbstractDungeon.ascensionLevel >= 20 && AbstractDungeon.bossList.size() == 2) {
+                        try {
+                            Method yuckyPrivateMethod = ProceedButton.class.getDeclaredMethod("goToDoubleBoss");
+                            yuckyPrivateMethod.setAccessible(true);
+                            yuckyPrivateMethod.invoke(__instance);
+                        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (!Settings.isEndless) {
+                        heartRoom(__instance);
                     }
-                } else if (!Settings.isEndless) {
-                    heartRoom(__instance);
                 }
             }
         }
