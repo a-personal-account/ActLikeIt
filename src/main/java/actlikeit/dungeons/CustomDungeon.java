@@ -181,6 +181,10 @@ public abstract class CustomDungeon extends AbstractDungeon {
         return this.getClass().getConstructor(CustomDungeon.class, AbstractPlayer.class, SaveFile.class).newInstance(this, p, saveFile);
     }
 
+    protected void makeMap() {
+        generateMap();
+    }
+
     @Override
     protected void initializeLevelSpecificChances() {
         shopRoomChance = 0.05F;
