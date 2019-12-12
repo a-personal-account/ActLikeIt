@@ -314,8 +314,8 @@ public abstract class CustomDungeon extends AbstractDungeon {
         if(!dungeons.containsKey(cd.id)) {
             if(!actnumbers.containsKey(actReplacement)) {
                 actnumbers.put(actReplacement, new ArrayList<>());
-                actnumbers.get(actReplacement).add(cd.id);
             }
+            actnumbers.get(actReplacement).add(cd.id);
             dungeons.put(cd.id, cd);
             ActCommand.addAct(cd.id, actReplacement);
         } else {
@@ -486,5 +486,20 @@ public abstract class CustomDungeon extends AbstractDungeon {
     public void addBoss(String encounterID, String encounterName, BaseMod.GetMonsterGroup monster, String mapIcon, String mapIconOutline) {
         BaseMod.addMonster(encounterID, encounterName, monster);
         BaseMod.addBoss(this.id, encounterID, mapIcon, mapIconOutline);
+    }
+
+
+    public static boolean isForkNecessary() {
+        boolean found = (Settings.isEndless && BehindTheScenesActNum.getActNum() >= 3 && CustomDungeon.actnumbers.containsKey(CustomDungeon.EXORDIUM));
+        if(!found && CustomDungeon.actnumbers.containsKey(BehindTheScenesActNum.getActNum() + 1)) {
+            for(final String s : CustomDungeon.actnumbers.get(BehindTheScenesActNum.getActNum() + 1)) {
+                CustomDungeon cd = CustomDungeon.dungeons.get(s);
+                if(!cd.finalAct || Settings.isEndless) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        return found;
     }
 }

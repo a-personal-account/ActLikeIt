@@ -22,9 +22,7 @@ public class GoToNextDungeonPatch {
     )
     public static SpireReturn<Void> Insert(ProceedButton __instance, AbstractRoom room) {
         //Trigger the fork event if there is a custom act available here.
-        int nextActs = CustomDungeon.actnumbers.containsKey(BehindTheScenesActNum.getActNum() + 1) ? CustomDungeon.actnumbers.get(BehindTheScenesActNum.getActNum() + 1).size() : 0;
-        if(((nextActs > 0 && BehindTheScenesActNum.getActNum() <= CustomDungeon.THEBEYOND) || nextActs > 1)
-                || (Settings.isEndless && BehindTheScenesActNum.getActNum() >= 3 && (CustomDungeon.actnumbers.containsKey(CustomDungeon.EXORDIUM) || nextActs > 0))) {
+        if(CustomDungeon.isForkNecessary()) {
             getForked();
 
             return SpireReturn.Return(null);

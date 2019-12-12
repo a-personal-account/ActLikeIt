@@ -8,8 +8,6 @@ import com.megacrit.cardcrawl.core.GameCursor;
 import com.megacrit.cardcrawl.screens.DoorUnlockScreen;
 import javassist.CtBehavior;
 
-import java.util.ArrayList;
-
 @SpirePatch(
         clz = DoorUnlockScreen.class,
         method = "exit"
@@ -21,16 +19,17 @@ public class AfterDoorPatch {
 
     //Set the fork-event if there's options after the door on this level.
     public static SpireReturn<Void> Prefix(DoorUnlockScreen __instance) {
-        ArrayList<String> availableActs = new ArrayList<>();
+        boolean found = false;
         if(CustomDungeon.actnumbers.containsKey(BehindTheScenesActNum.getActNum() + 1)) {
             for(final String s : CustomDungeon.actnumbers.get(BehindTheScenesActNum.getActNum() + 1)) {
                 CustomDungeon cd = CustomDungeon.dungeons.get(s);
                 if(cd.finalAct) {
-                    availableActs.add(s);
+                    found = true;
+                    break;
                 }
             }
         }
-        if(!availableActs.isEmpty()) {
+        if(found) {
             CardCrawlGame.mode = CardCrawlGame.GameMode.GAMEPLAY;
             CardCrawlGame.music.fadeOutBGM();
             CardCrawlGame.music.fadeOutTempBGM();

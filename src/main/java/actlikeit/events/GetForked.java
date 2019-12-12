@@ -45,7 +45,7 @@ public class GetForked extends AbstractImageEvent {
         if(AbstractDungeon.floorNum < 1) {
             nextAct--;
         }
-        if((nextAct - 1 < CustomDungeon.THEENDING || (afterdoor && nextAct - 1 == CustomDungeon.THEENDING)) && (!Settings.isEndless || nextAct < CustomDungeon.THEENDING)) {
+        if(!Settings.isEndless || nextAct < CustomDungeon.THEENDING) {
             //Create a list of all possible acts following the current one.
             String actName = null;
             String actID = null;
@@ -68,8 +68,12 @@ public class GetForked extends AbstractImageEvent {
                     actID = TheEnding.ID;
                     break;
             }
-            options.add(new ActOption(actID, FontHelper.colorString('[' + actName + "] " + OPTIONS[nextAct], BasegameStringColor)));
-            desc.append(FontHelper.colorString(DESCRIPTIONS[nextAct - 1], BasegameStringColor) + " NL NL ");
+            int nextBasegameAct = Math.min(nextAct, CustomDungeon.THEENDING);
+            if(afterdoor) {
+                nextBasegameAct++;
+            }
+            options.add(new ActOption(actID, FontHelper.colorString('[' + actName + "] " + OPTIONS[nextBasegameAct], BasegameStringColor)));
+            desc.append(FontHelper.colorString(DESCRIPTIONS[nextBasegameAct - 1], BasegameStringColor) + " NL NL ");
         }
 
         if(CustomDungeon.actnumbers.containsKey(nextAct)) {
@@ -97,9 +101,11 @@ public class GetForked extends AbstractImageEvent {
         if(CustomDungeon.actnumbers.containsKey(actnum)) {
             for (final String s : CustomDungeon.actnumbers.get(actnum)) {
                 CustomDungeon cd = CustomDungeon.dungeons.get(s);
-                options.add(new ActOption(cd.id, '[' + cd.name + "] " + cd.getOptionText(), resetActNum));
-                if (!cd.getBodyText().isEmpty()) {
-                    desc.append(cd.getBodyText() + " NL NL ");
+                if(Settings.isEndless || afterdoor == cd.finalAct) {
+                    options.add(new ActOption(cd.id, '[' + cd.name + "] " + cd.getOptionText(), resetActNum));
+                    if (!cd.getBodyText().isEmpty()) {
+                        desc.append(cd.getBodyText() + " NL NL ");
+                    }
                 }
             }
         }
