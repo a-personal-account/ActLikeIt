@@ -121,10 +121,6 @@ public abstract class CustomDungeon extends AbstractDungeon {
 
         setupMisc(cd, BehindTheScenesActNum.getActNum());
 
-        if(AbstractDungeon.lastCombatMetricKey == null) {
-            AbstractDungeon.lastCombatMetricKey = "";
-        }
-
         miscRng = new com.megacrit.cardcrawl.random.Random(Settings.seed + saveFile.floor_num);
         firstRoomChosen = true;
 
@@ -134,6 +130,9 @@ public abstract class CustomDungeon extends AbstractDungeon {
         //Copying data from the instance that was used for initialization.
         if (scene != null) {
             scene.dispose();
+        }
+        if(AbstractDungeon.lastCombatMetricKey == null) {
+            AbstractDungeon.lastCombatMetricKey = "";
         }
         scene = DungeonScene();
         fadeColor = cd.savedFadeColor;
