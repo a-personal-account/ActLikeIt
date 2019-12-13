@@ -1,5 +1,6 @@
 package actlikeit.dungeons;
 
+import actlikeit.patches.ContinueOntoHeartPatch;
 import actlikeit.savefields.BehindTheScenesActNum;
 import basemod.BaseMod;
 import basemod.ReflectionHacks;
@@ -169,8 +170,8 @@ public abstract class CustomDungeon extends AbstractDungeon {
 
     public abstract AbstractScene DungeonScene();
 
-    public boolean Ending() {
-        return false;
+    public void Ending() {
+        throw new RuntimeException(ContinueOntoHeartPatch.exmsg);
     }
 
     //Use of Reflection allows for instantiation, only requiring the 3 simple, mandatory constructors.

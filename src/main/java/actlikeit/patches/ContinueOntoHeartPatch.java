@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
         method = "update"
 )
 public class ContinueOntoHeartPatch {
+    public static String exmsg = "F";
     @SpireInsertPatch(
             locator = Locator.class
     )
@@ -27,7 +28,16 @@ public class ContinueOntoHeartPatch {
         //Mostly copied from the basegame and applied to custom dungeons on or higher than Beyond's level.
         if (AbstractDungeon.getCurrRoom() instanceof MonsterRoomBoss) {
             if (BehindTheScenesActNum.getActNum() >= CustomDungeon.THEBEYOND && !(CardCrawlGame.dungeon instanceof TheBeyond)) {
-                if(Settings.isEndless || !(CardCrawlGame.dungeon instanceof CustomDungeon) || !((CustomDungeon) CardCrawlGame.dungeon).Ending()) {
+                try {
+                    if(Settings.isEndless || !(CardCrawlGame.dungeon instanceof CustomDungeon)) {
+                        throw new RuntimeException(exmsg);
+                    }
+                    ((CustomDungeon) CardCrawlGame.dungeon).Ending();
+                } catch(RuntimeException ex) {
+                    if(!ex.getMessage().equals(exmsg)) {
+                        throw ex;
+                    }
+
                     if (AbstractDungeon.ascensionLevel >= 20 && AbstractDungeon.bossList.size() == 2) {
                         try {
                             Method yuckyPrivateMethod = ProceedButton.class.getDeclaredMethod("goToDoubleBoss");
