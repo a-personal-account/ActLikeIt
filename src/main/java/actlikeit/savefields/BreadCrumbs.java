@@ -3,20 +3,15 @@ package actlikeit.savefields;
 import actlikeit.ActLikeIt;
 import basemod.BaseMod;
 import basemod.abstracts.CustomSavable;
-import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;
 import basemod.interfaces.StartActSubscriber;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.*;
-import com.megacrit.cardcrawl.localization.EventStrings;
-import com.megacrit.cardcrawl.localization.ScoreBonusStrings;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class BreadCrumbs implements CustomSavable<Map<Integer, String>>,
         PostInitializeSubscriber,
-        EditStringsSubscriber,
         StartActSubscriber {
 
     private Map<Integer, String> breadCrumbs = new HashMap<>();
@@ -35,36 +30,6 @@ public class BreadCrumbs implements CustomSavable<Map<Integer, String>>,
 
         ElitesSlain.initialize(); //Doing this means I don't have to subscribe ElitesSlain to BaseMod.
         BehindTheScenesActNum.initialize();
-    }
-
-
-    private void loadLocStrings(Settings.GameLanguage language) {
-        BaseMod.loadCustomStringsFile(EventStrings.class, ActLikeIt.MOD_ID + "/localization/" + language.name().toLowerCase() + "/events.json");
-        BaseMod.loadCustomStringsFile(ScoreBonusStrings.class, ActLikeIt.MOD_ID + "/localization/" + language.name().toLowerCase() + "/score_bonuses.json");
-    }
-
-
-
-    private Settings.GameLanguage languageSupport() {
-        switch (Settings.language) {
-            default:
-                return Settings.GameLanguage.ENG;
-        }
-    }
-
-    @Override
-    public void receiveEditStrings() {
-        Settings.GameLanguage language = languageSupport();
-
-        // Load english first to avoid crashing if translation doesn't exist for something. Blatantly stolen from Vex.
-        loadLocStrings(Settings.GameLanguage.ENG);
-        if(!Settings.language.equals(Settings.GameLanguage.ENG)) {
-            try {
-                loadLocStrings(language);
-            } catch(Exception ex) {
-                ex.printStackTrace();
-            }
-        }
     }
 
     @Override
