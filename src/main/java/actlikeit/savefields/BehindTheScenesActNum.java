@@ -3,6 +3,7 @@ package actlikeit.savefields;
 import actlikeit.ActLikeIt;
 import basemod.BaseMod;
 import basemod.abstracts.CustomSavable;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 
 public class BehindTheScenesActNum implements CustomSavable<Integer> {
 
@@ -34,6 +35,9 @@ public class BehindTheScenesActNum implements CustomSavable<Integer> {
 
     @Override
     public void onLoad(Integer loaded) {
+        if(loaded == null) {
+            loaded = AbstractDungeon.actNum;
+        }
         bc.actNum = loaded;
         BaseMod.logger.info("Loading Actnum: " + bc.actNum);
     }

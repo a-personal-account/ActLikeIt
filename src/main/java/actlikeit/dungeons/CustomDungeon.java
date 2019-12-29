@@ -13,12 +13,14 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.*;
 import com.megacrit.cardcrawl.events.AbstractEvent;
+import com.megacrit.cardcrawl.events.shrines.*;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.monsters.MonsterInfo;
 import com.megacrit.cardcrawl.neow.NeowRoom;
+import com.megacrit.cardcrawl.relics.Circlet;
 import com.megacrit.cardcrawl.rewards.RewardItem;
 import com.megacrit.cardcrawl.rooms.EmptyRoom;
 import com.megacrit.cardcrawl.rooms.EventRoom;
@@ -232,7 +234,6 @@ public abstract class CustomDungeon extends AbstractDungeon {
 
     @Override
     protected void generateMonsters() {
-        // TODO: This is copied from TheCity
         generateWeakEnemies(weakpreset);
         generateStrongEnemies(strongpreset);
         generateElites(elitepreset);
@@ -284,6 +285,16 @@ public abstract class CustomDungeon extends AbstractDungeon {
             eventBackgroundImg = null;
         }
         eventBackgroundImg = ImageMaster.loadImage(eventImg);
+    }
+
+    @Override
+    protected void initializeShrineList() {
+        shrineList.add(GremlinMatchGame.ID);
+        shrineList.add(GremlinWheelGame.ID);
+        shrineList.add(GoldShrine.ID);
+        shrineList.add(Transmogrifier.ID);
+        shrineList.add(PurificationShrine.ID);
+        shrineList.add(UpgradeShrine.ID);
     }
 
     //The main datafields this mod uses.
@@ -381,17 +392,19 @@ public abstract class CustomDungeon extends AbstractDungeon {
 
     //Call this function in a boss' die(...) function to add a specific relic to it.
     public static void addRelicReward(String relicID) {
-        if(!AbstractDungeon.player.hasRelic(relicID)) {
-            boolean found = false;
-            for (final RewardItem ri : AbstractDungeon.getCurrRoom().rewards) {
-                if (ri.type == RewardItem.RewardType.RELIC && ri.relic != null && ri.relic.relicId.equals(relicID)) {
-                    found = true;
-                    break;
-                }
+        if(AbstractDungeon.player.hasRelic(relicID) && !relicID.equals(Circlet.ID)) {
+            relicID = Circlet.ID;
+        }
+
+        boolean found = false;
+        for (final RewardItem ri : AbstractDungeon.getCurrRoom().rewards) {
+            if (ri.type == RewardItem.RewardType.RELIC && ri.relic != null && ri.relic.relicId.equals(relicID)) {
+                found = true;
+                break;
             }
-            if (!found) {
-                AbstractDungeon.getCurrRoom().rewards.add(new RewardItem(RelicLibrary.getRelic(relicID).makeCopy()));
-            }
+        }
+        if (!found) {
+            AbstractDungeon.getCurrRoom().rewards.add(new RewardItem(RelicLibrary.getRelic(relicID).makeCopy()));
         }
     }
 
