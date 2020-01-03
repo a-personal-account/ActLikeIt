@@ -1,5 +1,6 @@
 package actlikeit.patches;
 
+import actlikeit.savefields.CustomScore;
 import actlikeit.savefields.ElitesSlain;
 import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
@@ -30,11 +31,12 @@ public class CalcFinalScorePatch {
     }
 
     private static int doThing(int tmp) {
-        BaseMod.logger.error("BEFORE: " + tmp);
         for(final ElitesSlain.Entry entry : ElitesSlain.getKilledElites().values()) {
             tmp += entry.kills * 10 * entry.actnum;
         }
-        BaseMod.logger.error("AFTER: " + tmp);
+        for(final CustomScore.Entry entry : CustomScore.getCustomScores()) {
+            tmp += entry.score * (entry.stackable ? entry.amount : 1);
+        }
 
         return tmp;
     }

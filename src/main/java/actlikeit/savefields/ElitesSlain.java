@@ -48,10 +48,6 @@ public class ElitesSlain implements CustomSavable<Map<String, ElitesSlain.Entry>
         }
     }
 
-    public static void reset() {
-        bc.killedElites.clear();
-    }
-
     public static class Entry {
         public int actnum;
         public int kills;

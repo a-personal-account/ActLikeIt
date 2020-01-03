@@ -15,7 +15,7 @@ import javassist.CtBehavior;
 
 import java.util.*;
 
-public class VictoryOrDeathScreenPatch {
+public class ElitesSlainDisplayPatch {
     @SpirePatch(
             clz = VictoryScreen.class,
             method = "createGameOverStats"

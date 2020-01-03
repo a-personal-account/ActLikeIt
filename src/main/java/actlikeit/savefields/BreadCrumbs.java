@@ -30,6 +30,7 @@ public class BreadCrumbs implements CustomSavable<Map<Integer, String>>,
 
         ElitesSlain.initialize(); //Doing this means I don't have to subscribe ElitesSlain to BaseMod.
         BehindTheScenesActNum.initialize();
+        CustomScore.initialize();
     }
 
     @Override

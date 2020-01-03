@@ -2,6 +2,7 @@ package actlikeit.patches;
 
 import actlikeit.savefields.BehindTheScenesActNum;
 import actlikeit.savefields.BreadCrumbs;
+import actlikeit.savefields.CustomScore;
 import actlikeit.savefields.ElitesSlain;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -24,7 +25,8 @@ public class ActNumPatch {
     public static class ResetIncrementActNum {
         public static void Prefix() {
             BehindTheScenesActNum.resetActNum();
-            ElitesSlain.reset();
+            ElitesSlain.getKilledElites().clear();
+            CustomScore.getCustomScores().clear();
             BreadCrumbs.getBreadCrumbs().clear();
         }
     }
