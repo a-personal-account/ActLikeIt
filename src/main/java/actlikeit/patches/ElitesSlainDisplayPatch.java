@@ -33,7 +33,7 @@ public class ElitesSlainDisplayPatch {
             public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
                 Matcher finalMatcher = new Matcher.MethodCallMatcher(ArrayList.class, "add");
 
-                return new int[]{LineFinder.findAllInOrder(ctMethodToPatch, new ArrayList<>(), finalMatcher)[5]};
+                return new int[]{LineFinder.findAllInOrder(ctMethodToPatch, new ArrayList<>(), finalMatcher)[7]};
             }
         }
     }
@@ -55,7 +55,7 @@ public class ElitesSlainDisplayPatch {
             public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
                 Matcher finalMatcher = new Matcher.MethodCallMatcher(ArrayList.class, "add");
 
-                return new int[]{LineFinder.findAllInOrder(ctMethodToPatch, new ArrayList<>(), finalMatcher)[5]};
+                return new int[]{LineFinder.findAllInOrder(ctMethodToPatch, new ArrayList<>(), finalMatcher)[7]};
             }
         }
     }
