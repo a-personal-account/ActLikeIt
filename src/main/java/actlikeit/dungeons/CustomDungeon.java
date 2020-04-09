@@ -64,7 +64,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
         this(NAME, ID, eventImg, genericEvents, 2, 12, 10);
     }
     public CustomDungeon(String NAME, String ID, String eventImg, boolean genericEvents, int weakpreset, int strongpreset, int elitepreset) {
-        super(NAME, ID, AbstractDungeon.player, new ArrayList<>());
+        this();
         this.id = ID;
         this.name = NAME;
         this.eventImg = eventImg;
@@ -79,6 +79,9 @@ public abstract class CustomDungeon extends AbstractDungeon {
         if(AbstractDungeon.actNum > 0) {
             setupMisc(this, AbstractDungeon.actNum);
         }
+    }
+    private CustomDungeon() {
+        super(null, null, AbstractDungeon.player, new ArrayList<>());
     }
 
     //Constructor for when you encounter this act through progression.

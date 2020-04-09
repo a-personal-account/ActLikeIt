@@ -6,20 +6,47 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import javassist.CtBehavior;
 
+import java.util.ArrayList;
+
 
 public class InitializeDeckPatches {
     //Loading an act on floornumber 0 has odd behaviour that is corrected with these 2 patches.
     @SpirePatch(
-            clz = AbstractPlayer.class,
-            method = "initializeStarterDeck"
+            clz = AbstractDungeon.class,
+            method = SpirePatch.CONSTRUCTOR,
+            paramtypez = { String.class, String.class, AbstractPlayer.class, ArrayList.class }
     )
     public static class PreventDeckInitializationPatch {
-
-        public static SpireReturn<Void> Prefix(AbstractPlayer __instance) {
-            if(__instance.masterDeck.size() > 1) {
-                return SpireReturn.Return(null);
+        @SpireInsertPatch(
+                locator = PrevLocator.class
+        )
+        public static void Prefix(AbstractDungeon __instance, String name, String levelId, AbstractPlayer p, ArrayList<String> newSpecialOneTimeEventList) {
+            if(AbstractDungeon.player != null && AbstractDungeon.player.masterDeck.size() > 1 && AbstractDungeon.floorNum == 0) {
+                AbstractDungeon.floorNum = -1;
             }
-            return SpireReturn.Continue();
+        }
+        private static class PrevLocator extends SpireInsertLocator {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractDungeon.class, "floorNum");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+
+        @SpireInsertPatch(
+                locator = PostLocator.class
+        )
+        public static void Postfix(AbstractDungeon __instance, String name, String levelId, AbstractPlayer p, ArrayList<String> newSpecialOneTimeEventList) {
+            if(AbstractDungeon.player != null && AbstractDungeon.floorNum < 0) {
+                AbstractDungeon.floorNum = 0;
+            }
+        }
+        private static class PostLocator extends SpireInsertLocator {
+            @Override
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(AbstractDungeon.class, "initializePotions");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
         }
     }
 
