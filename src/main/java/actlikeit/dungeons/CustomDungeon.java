@@ -26,6 +26,7 @@ import com.megacrit.cardcrawl.rooms.EmptyRoom;
 import com.megacrit.cardcrawl.rooms.EventRoom;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
 import com.megacrit.cardcrawl.scenes.AbstractScene;
+import com.megacrit.cardcrawl.screens.DungeonTransitionScreen;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -233,6 +234,18 @@ public abstract class CustomDungeon extends AbstractDungeon {
     }
     public String getAfterSelectText() {
         return "";
+    }
+
+    public String getActNumberText() {
+        switch(BehindTheScenesActNum.getActNum() + 1) {
+            case 1:
+            case 2:
+            case 3:
+                return DungeonTransitionScreen.TEXT[BehindTheScenesActNum.getActNum() * 2 + 2];
+
+            default:
+                return DungeonTransitionScreen.TEXT[8];
+        }
     }
 
     @Override

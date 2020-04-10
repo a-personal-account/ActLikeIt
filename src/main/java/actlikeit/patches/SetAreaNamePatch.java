@@ -1,7 +1,6 @@
 package actlikeit.patches;
 
 import actlikeit.dungeons.CustomDungeon;
-import actlikeit.savefields.BehindTheScenesActNum;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.screens.DungeonTransitionScreen;
@@ -20,7 +19,7 @@ public class SetAreaNamePatch {
         if (CustomDungeon.dungeons.containsKey(key)) {
             CustomDungeon cd = CustomDungeon.dungeons.get(key);
             __instance.levelName = cd.name;
-            __instance.levelNum = DungeonTransitionScreen.TEXT[2].replace("1", Integer.toString(BehindTheScenesActNum.getActNum() + 1));
+            __instance.levelNum = cd.getActNumberText();
         }
     }
 
