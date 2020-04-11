@@ -4,7 +4,6 @@ import actlikeit.dungeons.CustomDungeon;
 import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.map.DungeonMap;
@@ -17,6 +16,7 @@ import javassist.expr.ExprEditor;
 import javassist.expr.FieldAccess;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class DungeonMapPatches {
     @SpirePatch(
@@ -27,7 +27,21 @@ public class DungeonMapPatches {
         @SpirePrefixPatch
         public static SpireReturn<Float> Prefix(DungeonMap map) {
             if (CustomDungeon.dungeons.containsKey(AbstractDungeon.id)) {
-                return SpireReturn.Return(1.6F * Settings.MAP_DST_Y * (CardCrawlGame.dungeon.getMap().size() + 1) - 2820F * Settings.scale);
+                int count = 1;
+                boolean end = false;
+                for(final ArrayList<MapRoomNode> list : AbstractDungeon.map) {
+                    for(final MapRoomNode mrn : list) {
+                        if(mrn.getRoom() instanceof MonsterRoomBoss) {
+                            end = true;
+                            break;
+                        }
+                    }
+                    if(end) {
+                        break;
+                    }
+                    count++;
+                }
+                return SpireReturn.Return(Settings.MAP_DST_Y * count - 1380F * Settings.scale);
             }
             return SpireReturn.Continue();
         }
