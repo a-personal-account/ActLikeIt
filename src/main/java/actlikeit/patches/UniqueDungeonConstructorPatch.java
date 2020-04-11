@@ -25,7 +25,7 @@ public class UniqueDungeonConstructorPatch {
         pool.insertClassPath(new ClassClassPath(CustomDungeon.class));
         try {
             //Add a constructor no one could POSSIBLY patch into.
-            ctClass.addConstructor(CtNewConstructor.make("public AbstractDungeon(actlikeit.patches.UniqueDungeonConstructorPatch dummy) {  }", ctClass));
+            ctClass.addConstructor(CtNewConstructor.make("public AbstractDungeon(" + UniqueDungeonConstructorPatch.class.getName() + " dummy) {  }", ctClass));
         } catch(CannotCompileException ex) {
             ex.printStackTrace();
             throw new RuntimeException();
@@ -39,7 +39,7 @@ public class UniqueDungeonConstructorPatch {
                     ct.instrument(
                         new ExprEditor() {
                             public void edit(ConstructorCall m) throws CannotCompileException {
-                                m.replace("super((actlikeit.patches.UniqueDungeonConstructorPatch) null);");
+                                m.replace("super((" + UniqueDungeonConstructorPatch.class.getName() + ") null);");
                             }
                         }
                     );
