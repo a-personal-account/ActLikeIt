@@ -41,6 +41,7 @@ public class DungeonMapPatches {
                     }
                     count++;
                 }
+
                 return SpireReturn.Return(Settings.MAP_DST_Y * count - 1380F * Settings.scale);
             }
             return SpireReturn.Continue();
@@ -60,7 +61,7 @@ public class DungeonMapPatches {
                     if (m.getClassName().equals(MapRoomNode.class.getName())
                             && m.getFieldName().equals("y")) {
                         if(c.x++ == 0) {
-                            m.replace("{ $_ = (" + CustomDungeon.class.getName() + ".dungeons.containsKey(" + AbstractDungeon.class.getName() + ".id) && " + AbstractDungeon.class.getName() + ".map.size() <= " + AbstractDungeon.class.getName() + ".getCurrMapNode().y + 1 || (((" + MapRoomNode.class.getName() + ")((java.util.ArrayList)" + AbstractDungeon.class.getName() + ".map.get(" + AbstractDungeon.class.getName() + ".getCurrMapNode().y + 1)).get(3)).getRoom() instanceof " + MonsterRoomBoss.class.getName() + ") || !" + CustomDungeon.class.getName() + ".dungeons.containsKey(" + AbstractDungeon.class.getName() + ".id) && " + AbstractDungeon.class.getName() + ".getCurrMapNode().y == 14) ? 14 : 13; }");
+                            m.replace("{ $_ = (" + CustomDungeon.class.getName() + ".dungeons.containsKey(" + AbstractDungeon.class.getName() + ".id) && (" + AbstractDungeon.class.getName() + ".map.size() <= " + AbstractDungeon.class.getName() + ".getCurrMapNode().y + 1 || (((" + MapRoomNode.class.getName() + ")((java.util.ArrayList)" + AbstractDungeon.class.getName() + ".map.get(" + AbstractDungeon.class.getName() + ".getCurrMapNode().y + 1)).get(3)).getRoom() instanceof " + MonsterRoomBoss.class.getName() + ")) || !" + CustomDungeon.class.getName() + ".dungeons.containsKey(" + AbstractDungeon.class.getName() + ".id) && " + AbstractDungeon.class.getName() + ".getCurrMapNode().y == 14) ? 14 : 13; }");
                         }
                     }
                 }
