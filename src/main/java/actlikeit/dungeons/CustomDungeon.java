@@ -45,6 +45,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
     protected boolean genericEvents;
     protected Color savedFadeColor;
     public boolean finalAct;
+    protected boolean isEthereal = false;
     private Class<? extends AbstractEvent> onEnter = null;
     public boolean hasEvent() {
         return onEnter != null;
@@ -120,6 +121,10 @@ public abstract class CustomDungeon extends AbstractDungeon {
             AbstractDungeon.previousScreen = null;
         } else {
             AbstractDungeon.currMapNode.room = new EmptyRoom();
+        }
+        if(cd.isEthereal) {
+            BehindTheScenesActNum.setActNum(BehindTheScenesActNum.getActNum() - 1);
+            AbstractDungeon.actNum--;
         }
     }
     //Constructor for when you load this act from a savefile.
