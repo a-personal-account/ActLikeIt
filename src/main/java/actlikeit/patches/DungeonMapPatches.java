@@ -80,7 +80,7 @@ public class DungeonMapPatches {
         )
         public static void Insert(DungeonMapScreen __instance) {
             if(CustomDungeon.dungeons.containsKey(AbstractDungeon.id)) {
-                ReflectionHacks.setPrivate(__instance, DungeonMapScreen.class, "mapScrollUpperLimit", AbstractDungeon.map.size() * -140F);
+                ReflectionHacks.setPrivate(__instance, DungeonMapScreen.class, "mapScrollUpperLimit", ((AbstractDungeon.map.size() * -166.666F) - 200) * Settings.scale);
             }
         }
 
