@@ -1,5 +1,6 @@
 package actlikeit.dungeons;
 
+import actlikeit.ActLikeIt;
 import actlikeit.patches.ContinueOntoHeartPatch;
 import actlikeit.savefields.BehindTheScenesActNum;
 import basemod.BaseMod;
@@ -343,7 +344,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
                 if(replaces.matches("\\d")) {
                     actReplacement = Integer.parseInt(replaces);
                 } else {
-                    BaseMod.logger.error("Unable to add act \"" + cd.id + "\".");
+                    ActLikeIt.logger.error("Unable to add act \"" + cd.id + "\".");
                     return;
                 }
         }
@@ -359,7 +360,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
             dungeons.put(cd.id, cd);
             ActCommand.addAct(cd.id, actReplacement);
         } else {
-            BaseMod.logger.error("Act \"" + cd.id + "\" already present.");
+            ActLikeIt.logger.error("Act \"" + cd.id + "\" already present.");
         }
     }
     //Both the above functions can be called as object methods as well.
@@ -386,9 +387,9 @@ public abstract class CustomDungeon extends AbstractDungeon {
     }
     public void addTempMusic(String key, String path) {
         if(tempmusic.containsKey(key)) {
-            BaseMod.logger.error("Temp Music key \"" + key + "\" already taken!");
+            ActLikeIt.logger.error("Temp Music key \"" + key + "\" already taken!");
         } else {
-            BaseMod.logger.error("Adding Temp Music key: \"" + key + "\"");
+            ActLikeIt.logger.error("Adding Temp Music key: \"" + key + "\"");
             tempmusic.put(key, path);
         }
     }

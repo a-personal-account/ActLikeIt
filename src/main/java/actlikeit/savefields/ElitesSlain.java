@@ -24,7 +24,7 @@ public class ElitesSlain implements CustomSavable<Map<String, ElitesSlain.Entry>
 
     @Override
     public Map<String, Entry> onSave() {
-        BaseMod.logger.info("Saving ElitesSlain Map with size: " + killedElites.size());
+        ActLikeIt.logger.info("Saving ElitesSlain Map with size: " + killedElites.size());
         return killedElites;
     }
 
@@ -35,7 +35,7 @@ public class ElitesSlain implements CustomSavable<Map<String, ElitesSlain.Entry>
         } else {
             killedElites = new HashMap<>();
         }
-        BaseMod.logger.info("Loading ElitesSlain Map with size: " + killedElites.size());
+        ActLikeIt.logger.info("Loading ElitesSlain Map with size: " + killedElites.size());
     }
 
     public static void kill() {

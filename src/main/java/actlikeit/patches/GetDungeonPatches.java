@@ -1,17 +1,12 @@
 package actlikeit.patches;
 
+import actlikeit.ActLikeIt;
 import actlikeit.dungeons.CustomDungeon;
-import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.rooms.TreasureRoomBoss;
 import com.megacrit.cardcrawl.saveAndContinue.SaveFile;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class GetDungeonPatches {
 
@@ -23,7 +18,7 @@ public class GetDungeonPatches {
                 try {
                     dungeon = cd.fromProgression(p);
                 }catch (Exception ex) {
-                    BaseMod.logger.error("Failed to instantiate act " + key);
+                    ActLikeIt.logger.error("Failed to instantiate act " + key);
                     ex.printStackTrace();
                 }
             }
@@ -39,7 +34,7 @@ public class GetDungeonPatches {
                 try {
                     dungeon = cd.fromSaveFile(p, save);
                 }catch (Exception ex) {
-                    BaseMod.logger.error("Failed to instantiate act " + key);
+                    ActLikeIt.logger.error("Failed to instantiate act " + key);
                     ex.printStackTrace();
                 }
             }

@@ -61,12 +61,16 @@ public class DungeonMapPatches {
                     if (m.getClassName().equals(MapRoomNode.class.getName())
                             && m.getFieldName().equals("y")) {
                         if(c.x++ == 0) {
-                            m.replace("{ $_ = (" + CustomDungeon.class.getName() + ".dungeons.containsKey(" + AbstractDungeon.class.getName() + ".id) && (" + AbstractDungeon.class.getName() + ".map.size() <= " + AbstractDungeon.class.getName() + ".getCurrMapNode().y + 1 || (((" + MapRoomNode.class.getName() + ")((java.util.ArrayList)" + AbstractDungeon.class.getName() + ".map.get(" + AbstractDungeon.class.getName() + ".getCurrMapNode().y + 1)).get(3)).getRoom() instanceof " + MonsterRoomBoss.class.getName() + ")) || !" + CustomDungeon.class.getName() + ".dungeons.containsKey(" + AbstractDungeon.class.getName() + ".id) && " + AbstractDungeon.class.getName() + ".getCurrMapNode().y == 14) ? 14 : 13; }");
+                            m.replace("{ $_ = " + DungeonMapPatches.class.getName() + ".atMapEnd(); }");
                         }
                     }
                 }
             });
         }
+    }
+
+    public static int atMapEnd() {
+        return (CustomDungeon.dungeons.containsKey(AbstractDungeon.id) && (AbstractDungeon.map.size() <= AbstractDungeon.getCurrMapNode().y + 1 || ((AbstractDungeon.map.get(AbstractDungeon.getCurrMapNode().y + 1).get(3)).getRoom() instanceof MonsterRoomBoss)) || !CustomDungeon.dungeons.containsKey(AbstractDungeon.id) && AbstractDungeon.getCurrMapNode().y == 14) ? 14 : 13;
     }
 
 
@@ -80,7 +84,7 @@ public class DungeonMapPatches {
         )
         public static void Insert(DungeonMapScreen __instance) {
             if(CustomDungeon.dungeons.containsKey(AbstractDungeon.id)) {
-                ReflectionHacks.setPrivate(__instance, DungeonMapScreen.class, "mapScrollUpperLimit", ((AbstractDungeon.map.size() * -166.666F) - 200) * Settings.scale);
+                ReflectionHacks.setPrivate(__instance, DungeonMapScreen.class, "mapScrollUpperLimit", ((AbstractDungeon.map.size() * -166.666F) + 200) * Settings.scale);
             }
         }
 

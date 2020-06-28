@@ -45,7 +45,7 @@ public class BreadCrumbs implements CustomSavable<Map<Integer, String>>,
 
                 default:
                     //Add the ID of the dungeon into the map, keyd by the actnumber. This is for the score display at the end of the run.
-                    BaseMod.logger.info("Adding to breadcrumbs: " + AbstractDungeon.id + " (" + AbstractDungeon.actNum + ")");
+                    ActLikeIt.logger.info("Adding to breadcrumbs: " + AbstractDungeon.id + " (" + AbstractDungeon.actNum + ")");
                     breadCrumbs.put(AbstractDungeon.actNum, AbstractDungeon.id);
                     break;
             }
@@ -55,7 +55,7 @@ public class BreadCrumbs implements CustomSavable<Map<Integer, String>>,
 
     @Override
     public Map<Integer, String> onSave() {
-        BaseMod.logger.info("Saving breadcrumbs Map with size: " + breadCrumbs.size());
+        ActLikeIt.logger.info("Saving breadcrumbs Map with size: " + breadCrumbs.size());
         return breadCrumbs;
     }
 
@@ -66,6 +66,6 @@ public class BreadCrumbs implements CustomSavable<Map<Integer, String>>,
         } else {
             breadCrumbs = new HashMap<>();
         }
-        BaseMod.logger.info("Loading breadcrumbs Map with size: " + breadCrumbs.size());
+        ActLikeIt.logger.info("Loading breadcrumbs Map with size: " + breadCrumbs.size());
     }
 }

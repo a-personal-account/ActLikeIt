@@ -29,7 +29,7 @@ public class BehindTheScenesActNum implements CustomSavable<Integer> {
 
     @Override
     public Integer onSave() {
-        BaseMod.logger.info("Saving Actnum: " + bc.actNum);
+        ActLikeIt.logger.info("Saving Actnum: " + bc.actNum);
         return bc.actNum;
     }
 
@@ -39,6 +39,6 @@ public class BehindTheScenesActNum implements CustomSavable<Integer> {
             loaded = AbstractDungeon.actNum;
         }
         bc.actNum = loaded;
-        BaseMod.logger.info("Loading Actnum: " + bc.actNum);
+        ActLikeIt.logger.info("Loading Actnum: " + bc.actNum);
     }
 }
