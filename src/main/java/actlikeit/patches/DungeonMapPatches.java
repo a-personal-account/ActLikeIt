@@ -70,7 +70,7 @@ public class DungeonMapPatches {
     }
 
     public static int atMapEnd() {
-        return (CustomDungeon.dungeons.containsKey(AbstractDungeon.id) && (AbstractDungeon.map.size() <= AbstractDungeon.getCurrMapNode().y + 1 || ((AbstractDungeon.map.get(AbstractDungeon.getCurrMapNode().y + 1).get(3)).getRoom() instanceof MonsterRoomBoss)) || !CustomDungeon.dungeons.containsKey(AbstractDungeon.id) && AbstractDungeon.getCurrMapNode().y == 14) ? 14 : 13;
+        return (CustomDungeon.dungeons.containsKey(AbstractDungeon.id) && (AbstractDungeon.map.size() <= AbstractDungeon.getCurrMapNode().y + 1 || (AbstractDungeon.map.get(AbstractDungeon.getCurrMapNode().y + 1).size() > 3 && ((AbstractDungeon.map.get(AbstractDungeon.getCurrMapNode().y + 1).get(3)).getRoom() instanceof MonsterRoomBoss))) || !CustomDungeon.dungeons.containsKey(AbstractDungeon.id) && AbstractDungeon.getCurrMapNode().y == 14) ? 14 : 13;
     }
 
 
