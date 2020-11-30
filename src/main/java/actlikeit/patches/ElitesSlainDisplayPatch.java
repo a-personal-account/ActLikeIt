@@ -4,10 +4,12 @@ import actlikeit.ActLikeIt;
 import actlikeit.dungeons.CustomDungeon;
 import actlikeit.savefields.BreadCrumbs;
 import actlikeit.savefields.ElitesSlain;
+import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.screens.DeathScreen;
+import com.megacrit.cardcrawl.screens.GameOverScreen;
 import com.megacrit.cardcrawl.screens.GameOverStat;
 import com.megacrit.cardcrawl.screens.VictoryScreen;
 import javassist.CannotCompileException;
@@ -26,7 +28,7 @@ public class ElitesSlainDisplayPatch {
                 locator = Locator.class
         )
         public static void Insert(VictoryScreen __instance) {
-            doThing(__instance.stats);
+            doThing(__instance);
         }
 
         public static class Locator extends SpireInsertLocator {
@@ -48,7 +50,7 @@ public class ElitesSlainDisplayPatch {
                 locator = Locator.class
         )
         public static void Insert(DeathScreen __instance) {
-            doThing(__instance.stats);
+            doThing(__instance);
         }
 
         public static class Locator extends SpireInsertLocator {
@@ -60,7 +62,8 @@ public class ElitesSlainDisplayPatch {
         }
     }
 
-    private static void doThing(ArrayList<GameOverStat> stats) {
+    private static void doThing(GameOverScreen screen) {
+        ArrayList<GameOverStat> stats = (ArrayList<GameOverStat>) ReflectionHacks.getPrivate(screen, GameOverScreen.class, "stats");
         Map<String, ElitesSlain.Entry> elitesKilled = ElitesSlain.getKilledElites();
         Map<Integer, String> breadcrumbs = BreadCrumbs.getBreadCrumbs();
         String[] parts = CardCrawlGame.languagePack.getScoreString(ActLikeIt.makeID("ElitesKilled")).DESCRIPTIONS;

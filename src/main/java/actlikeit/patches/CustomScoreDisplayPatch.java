@@ -1,9 +1,11 @@
 package actlikeit.patches;
 
 import actlikeit.savefields.CustomScore;
+import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.screens.DeathScreen;
+import com.megacrit.cardcrawl.screens.GameOverScreen;
 import com.megacrit.cardcrawl.screens.GameOverStat;
 import com.megacrit.cardcrawl.screens.VictoryScreen;
 import javassist.CannotCompileException;
@@ -22,7 +24,7 @@ public class CustomScoreDisplayPatch {
                 locator = Locator.class
         )
         public static void Insert(VictoryScreen __instance) {
-            doThing(__instance.stats);
+            doThing(__instance);
         }
 
         public static class Locator extends SpireInsertLocator {
@@ -45,7 +47,7 @@ public class CustomScoreDisplayPatch {
                 locator = Locator.class
         )
         public static void Insert(DeathScreen __instance) {
-            doThing(__instance.stats);
+            doThing(__instance);
         }
 
         public static class Locator extends SpireInsertLocator {
@@ -58,7 +60,8 @@ public class CustomScoreDisplayPatch {
         }
     }
 
-    private static void doThing(ArrayList<GameOverStat> stats) {
+    private static void doThing(GameOverScreen screen) {
+        ArrayList<GameOverStat> stats = (ArrayList<GameOverStat>) ReflectionHacks.getPrivate(screen, GameOverScreen.class, "stats");
         String endstring;
         int score;
 
