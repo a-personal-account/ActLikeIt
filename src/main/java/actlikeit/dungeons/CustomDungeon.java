@@ -101,6 +101,9 @@ public abstract class CustomDungeon extends AbstractDungeon {
                 if(cd.onEnter == null) {
                     throw new ArithmeticException();
                 }
+                //For some reason, the hand causes a crash, even though there is no reason for a hand to exist at this point.
+                AbstractDungeon.player.hand.group.clear();
+
                 //Set the starting event
                 AbstractEvent ae = cd.onEnter.newInstance();
 
