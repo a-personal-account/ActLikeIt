@@ -47,6 +47,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
     protected Color savedFadeColor;
     public boolean finalAct;
     protected boolean isEthereal = false;
+    public boolean preventFinalActRewards = true;
     private Class<? extends AbstractEvent> onEnter = null;
     public boolean hasEvent() {
         return onEnter != null;
@@ -153,6 +154,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
         scene = DungeonScene();
         fadeColor = cd.savedFadeColor;
         this.name = cd.name;
+        this.preventFinalActRewards = cd.preventFinalActRewards;
         //event bg needs to be set here, because it can't be set when the constructor of AbstractDungeon is executed yet.
         AbstractDungeon.eventBackgroundImg = ImageMaster.loadImage(cd.eventImg);
         initializeLevelSpecificChances();
@@ -392,7 +394,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
         if(tempmusic.containsKey(key)) {
             ActLikeIt.logger.error("Temp Music key \"" + key + "\" already taken!");
         } else {
-            ActLikeIt.logger.error("Adding Temp Music key: \"" + key + "\"");
+            ActLikeIt.logger.info("Adding Temp Music key: \"" + key + "\"");
             tempmusic.put(key, path);
         }
     }
@@ -431,6 +433,10 @@ public abstract class CustomDungeon extends AbstractDungeon {
         if (!found) {
             AbstractDungeon.getCurrRoom().rewards.add(new RewardItem(RelicLibrary.getRelic(relicID).makeCopy()));
         }
+    }
+
+    public void allowFinalActRewards() {
+        preventFinalActRewards = false;
     }
 
     //Wrappers that combine BaseMod's addMonster and addEncounter methods.
