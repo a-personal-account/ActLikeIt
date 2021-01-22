@@ -5,6 +5,7 @@ import actlikeit.patches.ContinueOntoHeartPatch;
 import actlikeit.savefields.BehindTheScenesActNum;
 import basemod.BaseMod;
 import basemod.ReflectionHacks;
+import basemod.abstracts.CustomSavable;
 import basemod.devcommands.act.ActCommand;
 import com.badlogic.gdx.graphics.Color;
 import com.megacrit.cardcrawl.audio.MainMusic;
@@ -191,11 +192,32 @@ public abstract class CustomDungeon extends AbstractDungeon {
         throw new RuntimeException(ContinueOntoHeartPatch.exmsg);
     }
 
+    private static ArrayList<String> specialOneTimeEventListBackup = null;
+    public static void initialize() {
+        BaseMod.addSaveField(ActLikeIt.makeID("event_list_backup"), new CustomSavable<ArrayList<String>>() {
+            @Override
+            public ArrayList<String> onSave() {
+                return specialOneTimeEventListBackup;
+            }
+
+            @Override
+            public void onLoad(ArrayList<String> strings) {
+                specialOneTimeEventListBackup = strings;
+            }
+        });
+    }
     //Use of Reflection allows for instantiation, only requiring the 3 simple, mandatory constructors.
     public CustomDungeon fromProgression(AbstractPlayer p) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         datasource = this;
+        if(!this.genericEvents) {
+            specialOneTimeEventListBackup = AbstractDungeon.specialOneTimeEventList;
+            AbstractDungeon.specialOneTimeEventList = new ArrayList<>();
+        } else if (specialOneTimeEventListBackup != null) {
+            AbstractDungeon.specialOneTimeEventList = specialOneTimeEventListBackup;
+            specialOneTimeEventListBackup = null;
+        }
         return this.getClass().getConstructor(CustomDungeon.class, AbstractPlayer.class, ArrayList.class)
-                .newInstance(this, p, this.genericEvents  ? AbstractDungeon.specialOneTimeEventList : new ArrayList<>());
+                .newInstance(this, p, AbstractDungeon.specialOneTimeEventList);
     }
     public CustomDungeon fromSaveFile(AbstractPlayer p, SaveFile saveFile) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         datasource = this;

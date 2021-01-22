@@ -1,5 +1,6 @@
 package actlikeit;
 
+import actlikeit.dungeons.CustomDungeon;
 import actlikeit.savefields.BreadCrumbs;
 import actlikeit.savefields.ElitesSlain;
 import basemod.BaseMod;
@@ -38,6 +39,8 @@ public class ActLikeIt implements
         BaseMod.registerModBadge(
                 badgeTexture, "Act like it", "Razash",
                 "Framework for creating custom acts", modPanel);
+
+        CustomDungeon.initialize();
     }
 
 
