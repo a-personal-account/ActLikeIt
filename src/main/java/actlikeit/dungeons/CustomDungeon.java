@@ -648,7 +648,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
         if (bossesInOrder == null) {
             bossesInOrder = new ArrayList<>();
         }
-        bossesInOrder.add(new BossDupeInfo(ID, false));
+        bossesInOrder.add(new BossDupeInfo(ID, needsToDie));
     }
 
     public void processMandatoryBosses() {
@@ -681,8 +681,6 @@ public abstract class CustomDungeon extends AbstractDungeon {
     }
 
     private void bossInteractedWith(boolean needsToDie) {
-        System.out.println("--------------------");
-        System.out.println(AbstractDungeon.id);
         if (dungeons.containsKey(AbstractDungeon.id)) {
             bossesInOrder = dungeons.get(AbstractDungeon.id).bossesInOrder;
         }
