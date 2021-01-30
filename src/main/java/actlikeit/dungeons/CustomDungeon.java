@@ -651,25 +651,24 @@ public abstract class CustomDungeon extends AbstractDungeon {
         bossesInOrder.add(new BossDupeInfo(ID, needsToDie));
     }
 
-    public void processMandatoryBosses() {
-        boolean forced = false;
+    public List<String> processMandatoryBosses() {
         if (dungeons.containsKey(AbstractDungeon.id)) {
             bossesInOrder = dungeons.get(AbstractDungeon.id).bossesInOrder;
         }
         if (bossesInOrder != null) {
             for (BossDupeInfo info : bossesInOrder) {
                 if (!ActLikeIt.encounteredBosses.contains(info.ID)) {
-                    AbstractDungeon.bossList.clear();
+                    List<String> tmp = AbstractDungeon.bossList;
+                    AbstractDungeon.bossList = new ArrayList<>();
                     AbstractDungeon.bossList.add(info.ID);
                     ActLikeIt.logger.info("Forcing Boss Encounter: " + info.ID);
-                    forced = true;
-                    break;
+                    tmp.remove(info.ID);
+                    return tmp;
                 }
             }
         }
-        if (!forced) {
-            ActLikeIt.logger.info("Not forced any Boss Encounter.");
-        }
+        ActLikeIt.logger.info("Not forced any Boss Encounter.");
+        return null;
     }
 
     public void bossSeen() {
