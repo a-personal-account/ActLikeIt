@@ -27,8 +27,8 @@ public class BasemodBossPatch {
                 if(triggered != null) {
                     Collections.shuffle(triggered, new Random(AbstractDungeon.monsterRng.randomLong()));
                     AbstractDungeon.bossList.addAll(triggered);
+                    return SpireReturn.Return(null);
                 }
-                return SpireReturn.Return(null);
             }
             return SpireReturn.Continue();
         }
