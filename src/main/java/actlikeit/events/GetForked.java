@@ -101,7 +101,7 @@ public class GetForked extends AbstractImageEvent {
         if(CustomDungeon.actnumbers.containsKey(actnum)) {
             for (final String s : CustomDungeon.actnumbers.get(actnum)) {
                 CustomDungeon cd = CustomDungeon.dungeons.get(s);
-                if(Settings.isEndless || afterdoor == cd.finalAct) {
+                if(cd.accessible() && (Settings.isEndless || afterdoor == cd.finalAct)) {
                     options.add(new ActOption(cd.id, '[' + cd.name + "] " + cd.getOptionText(), resetActNum));
                     if (!cd.getBodyText().isEmpty()) {
                         desc.append(cd.getBodyText() + " NL NL ");

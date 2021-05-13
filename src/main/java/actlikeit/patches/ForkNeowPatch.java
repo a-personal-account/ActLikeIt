@@ -31,7 +31,7 @@ public class ForkNeowPatch {
             if (CustomDungeon.actnumbers.containsKey(CustomDungeon.EXORDIUM)) {
                 for (final String s : CustomDungeon.actnumbers.get(CustomDungeon.EXORDIUM)) {
                     CustomDungeon cd = CustomDungeon.dungeons.get(s);
-                    if (!cd.finalAct) {
+                    if (cd.accessible() && !cd.finalAct) {
                         availableActs.add(s);
                     }
                 }

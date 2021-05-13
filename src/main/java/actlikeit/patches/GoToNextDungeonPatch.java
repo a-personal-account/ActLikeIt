@@ -35,7 +35,7 @@ public class GoToNextDungeonPatch {
                     CardCrawlGame.nextDungeon = TheBeyond.ID;
                     break;
                 default:
-                    if(Settings.isEndless || AbstractDungeon.floorNum < 1) {
+                    if(Settings.isEndless || AbstractDungeon.floorNum < 1 || BehindTheScenesActNum.getActNum() == 0) {
                         CardCrawlGame.nextDungeon = Exordium.ID;
                         if(BehindTheScenesActNum.getActNum() >= 3) {
                             BehindTheScenesActNum.resetActNum();

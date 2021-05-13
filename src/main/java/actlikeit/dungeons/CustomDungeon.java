@@ -201,6 +201,13 @@ public abstract class CustomDungeon extends AbstractDungeon {
         throw new RuntimeException(ContinueOntoHeartPatch.exmsg);
     }
 
+    public boolean accessible() {
+        return Settings.isDebug || this.condition();
+    }
+    public boolean canSpawn() {
+        return true;
+    }
+
     private static ArrayList<String> specialOneTimeEventListBackup = null;
 
     public static void initialize() {
@@ -633,7 +640,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
         if (!found && CustomDungeon.actnumbers.containsKey(BehindTheScenesActNum.getActNum() + 1)) {
             for (final String s : CustomDungeon.actnumbers.get(BehindTheScenesActNum.getActNum() + 1)) {
                 CustomDungeon cd = CustomDungeon.dungeons.get(s);
-                if (!cd.finalAct || Settings.isEndless) {
+                if (cd.accessible() && (!cd.finalAct || Settings.isEndless)) {
                     found = true;
                     break;
                 }
