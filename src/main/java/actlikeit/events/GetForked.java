@@ -11,8 +11,12 @@ import com.megacrit.cardcrawl.dungeons.*;
 import com.megacrit.cardcrawl.events.AbstractImageEvent;
 import com.megacrit.cardcrawl.events.GenericEventDialog;
 import com.megacrit.cardcrawl.helpers.FontHelper;
+import com.megacrit.cardcrawl.helpers.PowerTip;
+import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.EventStrings;
 import com.megacrit.cardcrawl.neow.NeowRoom;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.Circlet;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.ui.buttons.ProceedButton;
 
@@ -36,7 +40,6 @@ public class GetForked extends AbstractImageEvent {
 
     public GetForked(boolean afterdoor) {
         super(NAME, "", BASE_IMG);
-        StringBuilder desc = new StringBuilder();
 
         this.afterdoor = afterdoor;
         this.extraText = true;
@@ -47,8 +50,8 @@ public class GetForked extends AbstractImageEvent {
         }
         if(!Settings.isEndless || nextAct < CustomDungeon.THEENDING) {
             //Create a list of all possible acts following the current one.
-            String actName = null;
-            String actID = null;
+            String actName;
+            String actID;
             switch (nextAct) {
                 case CustomDungeon.EXORDIUM:
                     actName = Exordium.NAME;
@@ -62,7 +65,6 @@ public class GetForked extends AbstractImageEvent {
                     actName = TheBeyond.NAME;
                     actID = TheBeyond.ID;
                     break;
-
                 default:
                     actName = TheEnding.NAME;
                     actID = TheEnding.ID;
@@ -72,40 +74,38 @@ public class GetForked extends AbstractImageEvent {
             if(afterdoor) {
                 nextBasegameAct++;
             }
-            options.add(new ActOption(actID, FontHelper.colorString('[' + actName + "] " + OPTIONS[nextBasegameAct], BasegameStringColor)));
-            desc.append(FontHelper.colorString(DESCRIPTIONS[nextBasegameAct - 1], BasegameStringColor) + " NL NL ");
+            options.add(new ActOption(actID, actName, FontHelper.colorString('[' + actName + "] " + OPTIONS[nextBasegameAct], BasegameStringColor), FontHelper.colorString(DESCRIPTIONS[nextBasegameAct - 1], BasegameStringColor)));
         }
 
         if(CustomDungeon.actnumbers.containsKey(nextAct)) {
-            this.addActOption(nextAct, desc, AbstractDungeon.floorNum < 1);
+            this.addActOption(nextAct, AbstractDungeon.floorNum < 1);
         }
         if(Settings.isEndless && !afterdoor && nextAct - 1 >= CustomDungeon.THEBEYOND && (CustomDungeon.actnumbers.containsKey(CustomDungeon.EXORDIUM) || CustomDungeon.actnumbers.containsKey(nextAct))) {
             resetActnum = imageEventText.optionList.size();
-            options.add(new ActOption(Exordium.ID, FontHelper.colorString('[' + Exordium.NAME +  "] " + OPTIONS[OPTIONS.length - 1], BasegameStringColor), true));
-            desc.append(FontHelper.colorString(DESCRIPTIONS[DESCRIPTIONS.length - 1], BasegameStringColor) + " NL NL ");
-            this.addActOption(CustomDungeon.EXORDIUM, desc, true);
+            options.add(new ActOption(Exordium.ID, Exordium.NAME, FontHelper.colorString('[' + Exordium.NAME +  "] " + OPTIONS[OPTIONS.length - 1], BasegameStringColor), FontHelper.colorString(DESCRIPTIONS[DESCRIPTIONS.length - 1], BasegameStringColor), true));
+            this.addActOption(CustomDungeon.EXORDIUM, true);
         } else {
             resetActnum = Integer.MAX_VALUE;
         }
         for(final ActOption ao : options) {
-            imageEventText.setDialogOption(ao.text);
+            AbstractRelic tooltipRelic = RelicLibrary.getRelic(Circlet.ID).makeCopy();
+            tooltipRelic.tips.clear();
+            tooltipRelic.tips.add(new PowerTip(ao.name, ao.body));
+            imageEventText.setDialogOption(ao.text, tooltipRelic);
         }
         imageEventText.setDialogOption(OPTIONS[0]);
-        this.body = desc.toString();
+        this.body = DESCRIPTIONS[6];
     }
 
-    private void addActOption(int actnum, StringBuilder desc) {
-        this.addActOption(actnum, desc, false);
+    private void addActOption(int actnum) {
+        this.addActOption(actnum, false);
     }
-    private void addActOption(int actnum, StringBuilder desc, boolean resetActNum) {
+    private void addActOption(int actnum, boolean resetActNum) {
         if(CustomDungeon.actnumbers.containsKey(actnum)) {
             for (final String s : CustomDungeon.actnumbers.get(actnum)) {
                 CustomDungeon cd = CustomDungeon.dungeons.get(s);
                 if(cd.accessible() && (Settings.isEndless || afterdoor == cd.finalAct)) {
-                    options.add(new ActOption(cd.id, '[' + cd.name + "] " + cd.getOptionText(), resetActNum));
-                    if (!cd.getBodyText().isEmpty()) {
-                        desc.append(cd.getBodyText() + " NL NL ");
-                    }
+                    options.add(new ActOption(cd.id, cd.name, '[' + cd.name + "] " + cd.getOptionText(), cd.getBodyText(), resetActNum));
                 }
             }
         }
@@ -174,15 +174,19 @@ public class GetForked extends AbstractImageEvent {
 
     static class ActOption {
         String ID;
+        String name;
         String text;
+        String body;
         boolean resetActNum;
 
-        public ActOption(String ID, String text) {
-            this(ID, text, false);
+        public ActOption(String ID, String name, String text, String body) {
+            this(ID, name, text, body, false);
         }
-        public ActOption(String ID, String text, boolean resetActNum) {
+        public ActOption(String ID, String name, String text, String body, boolean resetActNum) {
             this.ID = ID;
+            this.name = name;
             this.text = text;
+            this.body = body.replaceAll("[~@]", "");
             this.resetActNum = resetActNum;
         }
     }
