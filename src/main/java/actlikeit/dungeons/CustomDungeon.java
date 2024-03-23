@@ -202,7 +202,7 @@ public abstract class CustomDungeon extends AbstractDungeon {
     }
 
     public boolean accessible() {
-        return Settings.isDebug || this.condition();
+        return Settings.isDebug || this.canSpawn();
     }
     public boolean canSpawn() {
         return true;
